@@ -1,0 +1,317 @@
+<div class="page-header">
+  <h1>{{ 'Order List' | translate }} <small>{{ 'Dates, times and other information' | translate }}</small></h1>
+</div>
+
+<br>
+<div class="row">
+  <div class="col-md-3 left">
+    <h4>{{ 'Actions' | translate }}:</h4>
+    <div>
+      <button
+          title="{{ 'Autoload' | translate }}"
+          class="btn"
+          [class.btn-success]="isAutoloadActive"
+          [class.btn-danger]="!isAutoloadActive"
+          (click)="isAutoloadActive = !isAutoloadActive">
+        <i [hidden]="!isAutoloadActive" class="glyphicon glyphicon-ok"></i>
+        <i [hidden]="isAutoloadActive"  class="glyphicon glyphicon-remove"></i>
+        <span>{{ 'Autoload' | translate }}</span>
+      </button>
+      <button
+          title="{{ 'Close all rows' | translate }}"
+          class="btn btn-primary"
+          [disabled]="arrOrdrsOpen.length === 0"
+          (click)="doToggleAllOrders(false)">
+        <i class="glyphicon glyphicon-eye-close"></i>
+      </button>
+      <button
+          title="{{ 'Toggle sort order' | translate }}"
+          class="btn btn-primary"
+          (click)="doToggleSort()">
+        <i [hidden]="doGetSortDirection() < 0" class="glyphicon glyphicon-chevron-down"></i>
+        <i [hidden]="doGetSortDirection() > 0" class="glyphicon glyphicon-chevron-up"></i>
+      </button>
+      <button
+          title="{{ 'Reset all' | translate }}"
+          class="btn btn-danger"
+          (click)="doRefreshOrders()">
+        <i class="glyphicon glyphicon-remove"></i>
+      </button>
+    </div>
+  </div>
+  <div class="col-md-9 right">
+    <h4>{{ 'Search' | translate }}:</h4>
+    <form name="ordersSearchForm" (submit)="doReadOrdersWithSearch(ordersSearchInput.value)">
+      <div class="input-group">
+        <input #ordersSearchInput id="orders-search-text" type="text" class="form-control" [value]="strSearch">
+        <span class="input-group-btn">
+          <button type="submit" class="btn btn-primary">
+            <i class="glyphicon glyphicon-search"></i>
+          </button>
+          <button type="button" class="btn btn-danger"
+              *ngIf="strSearch"
+              (click)="doResetSearch()"
+            ><i class="glyphicon glyphicon-remove"></i>
+          </button>
+        </span>
+      </div>
+    </form>
+  </div>
+</div>
+
+<br>
+<div class="row" *ngIf="doGetKeysForFilters().length > 0">
+  <div class="col-md-12 left">
+    <h4>{{ 'User filters' | translate }}:</h4>
+    <ng-template ngFor let-strKey [ngForOf]="doGetKeysForFilters()">
+      <a (click)="doUnsetFilter(strKey)">
+        <span class="text-muted">{{ strKey | translate }}:</span>
+        <span class="text-primary">{{ doGetFilterValue(strKey) | translate }}</span>
+        <i class="glyphicon glyphicon-remove"></i></a>,
+      <span>&nbsp;</span>
+    </ng-template>
+    <a [hidden]="doGetKeysForFilters().length <= 0"
+        title="{{ 'Remove all filters' | translate }}"
+        (click)="doUnsetAllFilters()">
+      <span class="text-danger">{{ 'Remove all filters' | translate }}</span>
+      <i class="glyphicon glyphicon-remove"></i></a>
+  </div>
+</div>
+
+<br>
+<div class="row" *ngIf="arrKeysOrdrHeadersAndValuesToFilterBy.length > 0">
+  <div class="col-md-12 left">
+    <h4>{{ 'Predefined filters' | translate }}:</h4>
+    <ng-template ngFor let-strOrdrHeader [ngForOf]="arrKeysOrdrHeadersAndValuesToFilterBy">
+      <ng-template ngFor let-strValue [ngForOf]="aarOrdrHeadersAndValuesToFilterBy[strOrdrHeader]">
+        <span class="text-muted">{{ strOrdrHeader | translate }}:</span>
+        <span class="text-primary">{{ strValue | translate }}</span>
+        <span>&nbsp;</span>
+      </ng-template>
+    </ng-template>
+  </div>
+</div>
+
+<br>
+<div class="row">
+  <div id="order-sidebar" class="col-md-3 left">
+    <h4>{{ 'Fast filters' | translate }}</h4>
+    <ng-template ngFor let-strFilterKey [ngForOf]="arrOrdrSidebarFilters">
+      <h5>{{ strFilterKey | translate }}:</h5>
+      <ul>
+        <ng-template ngFor let-strFilter [ngForOf]="aarOrdrSidebarFilters[strFilterKey]">
+          <li [class.active]="doGetFilterValue(strFilterKey) === strFilter">
+            <a (click)="doSetFilter($event, strFilterKey, strFilter)">{{ strFilter | translate }}</a>
+          </li>
+        </ng-template>
+      </ul>
+    </ng-template>
+  </div>
+
+  <div class="col-md-9 overflow-hidden left">
+    <table class="orders table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <!--<th>
+            <a (click)="doToggleSort('_id')"
+              title="{{ 'ID' | translate }}">
+              <i [hidden]="!(isSortKeyEqual('_id'))" class="glyphicon glyphicon-chevron-up"></i>
+              <i [hidden]="!(isSortKeyEqual('-_id'))" class="glyphicon glyphicon-chevron-down"></i>
+              <span>{{ 'ID' | translate }}</span>
+            </a>
+          </th>-->
+          <th *ngIf="arrOrdrHeadersToExclude.indexOf('TargetEndDateTime') < 0">
+            <a (click)="doToggleSort('TargetEndDateTime')"
+              title="{{ 'CW' | translate }}">
+              <i [hidden]="!(isSortKeyEqual('TargetEndDateTime'))" class="glyphicon glyphicon-chevron-up"></i>
+              <i [hidden]="!(isSortKeyEqual('-TargetEndDateTime'))" class="glyphicon glyphicon-chevron-down"></i>
+              <span>{{ 'CW' | translate }}</span>
+            </a>
+          </th>
+          <th *ngIf="arrOrdrHeadersToExclude.indexOf('TargetEndDateTime') < 0">
+            <a (click)="doToggleSort('TargetEndDateTime')"
+              title="{{ 'Date' | translate }}">
+              <i [hidden]="!(isSortKeyEqual('TargetEndDateTime'))" class="glyphicon glyphicon-chevron-up"></i>
+              <i [hidden]="!(isSortKeyEqual('-TargetEndDateTime'))" class="glyphicon glyphicon-chevron-down"></i>
+              <span>{{ 'Date' | translate }}</span>
+            </a>
+          </th>
+          <th *ngIf="arrOrdrHeadersToExclude.indexOf('MachineId') < 0">
+            <a (click)="doToggleSort('MachineId')"
+              title="{{ 'Workorder ID' | translate }}">
+              <i [hidden]="!(isSortKeyEqual('MachineId'))" class="glyphicon glyphicon-chevron-up"></i>
+              <i [hidden]="!(isSortKeyEqual('-MachineId'))" class="glyphicon glyphicon-chevron-down"></i>
+              <span>{{ 'Machine ID' | translate }}</span>
+            </a>
+          </th>
+          <th *ngIf="arrOrdrHeadersToExclude.indexOf('WorkorderId') < 0">
+            <a (click)="doToggleSort('WorkorderId')"
+              title="{{ 'Workorder ID' | translate }}">
+              <i [hidden]="!(isSortKeyEqual('WorkorderId'))" class="glyphicon glyphicon-chevron-up"></i>
+              <i [hidden]="!(isSortKeyEqual('-WorkorderId'))" class="glyphicon glyphicon-chevron-down"></i>
+              <span>{{ 'Workorder ID' | translate }}</span>
+            </a>
+          </th>
+          <th *ngIf="arrOrdrHeadersToExclude.indexOf('CurrentQuantity') < 0">
+            <a (click)="doToggleSort('CurrentQuantity')"
+              title="{{ 'Amount current' | translate }}">
+              <i [hidden]="!(isSortKeyEqual('CurrentQuantity'))" class="glyphicon glyphicon-chevron-up"></i>
+              <i [hidden]="!(isSortKeyEqual('-CurrentQuantity'))" class="glyphicon glyphicon-chevron-down"></i>
+              <span>{{ 'Amount current' | translate }}</span>
+            </a>
+          </th>
+          <th *ngIf="arrOrdrHeadersToExclude.indexOf('TargetQuantity') < 0">
+            <a (click)="doToggleSort('TargetQuantity')"
+              title="{{ 'Amount target' | translate }}">
+              <i [hidden]="!(isSortKeyEqual('TargetQuantity'))" class="glyphicon glyphicon-chevron-up"></i>
+              <i [hidden]="!(isSortKeyEqual('-TargetQuantity'))" class="glyphicon glyphicon-chevron-down"></i>
+              <span>{{ 'Amount target' | translate }}</span>
+            </a>
+          </th>
+          <th *ngIf="arrOrdrHeadersToExclude.indexOf('ArticleCode') < 0">
+            <a (click)="doToggleSort('ArticleCode')"
+              title="{{ 'Article code' | translate }}">
+              <i [hidden]="!(isSortKeyEqual('ArticleCode'))" class="glyphicon glyphicon-chevron-up"></i>
+              <i [hidden]="!(isSortKeyEqual('-ArticleCode'))" class="glyphicon glyphicon-chevron-down"></i>
+              <span>{{ 'Article code' | translate }}</span>
+            </a>
+          </th>
+          <th *ngIf="arrOrdrHeadersToExclude.indexOf('surfaceText') < 0">
+            <a (click)="doToggleSort('surfaceText')"
+              title="{{ 'Description' | translate }}">
+              <i [hidden]="!(isSortKeyEqual('surfaceText'))" class="glyphicon glyphicon-chevron-up"></i>
+              <i [hidden]="!(isSortKeyEqual('-surfaceText'))" class="glyphicon glyphicon-chevron-down"></i>
+              <span>{{ 'Description' | translate }}</span>
+            </a>
+          </th>
+        </tr>
+      </thead>
+      <tbody *ngIf="arrOrdrs.length <= 0">
+        <td colspan="9">
+          <div class="alert alert-info">{{ 'No order data found' | translate }}!</div>
+        </td>
+      </tbody>
+      <tbody *ngIf="arrOrdrs.length > 0">
+        <ng-template
+            ngFor
+            let-objOrdr
+            let-index="index"
+            [ngForOf]="arrOrdrs"
+            [ngForTrackBy]="doTrackRows">
+          <tr class="order-table-row border"
+              (click)="doToggleOpenOrder(index)"
+              [class.gray]="isSortSecondaryKey() || isFilterSecondaryKey()"
+              [class.active]="isOrderOpen(index)">
+            
+            <td>{{ index + 1 }}</td>
+            <!--<td>
+              <a (click)="doSetFilter($event, '_id', objOrdr._id)"
+                  title="{{ 'Set filter to variable' | translate:{ strHeader: '_id' } }}"
+              >{{ objOrdr._id }}</a>
+            </td>-->
+            <td *ngIf="arrOrdrHeadersToExclude.indexOf('TargetEndDateTime') < 0">
+              <a (click)="doSetFilter($event, 'calendarYear', objOrdr.calendarYear)"
+                  title="{{ 'Set filter to variable' | translate:{ strHeader: 'Calendar Year' | translate } }}"
+              >{{ objOrdr.calendarYear }}</a>
+              <span>/</span>
+              <a (click)="doSetFilter($event, 'calendarWeek', objOrdr.calendarWeek)"
+                  title="{{ 'Set filter to variable' | translate:{ strHeader: 'Calendar Week' | translate } }}"
+              >{{ objOrdr.calendarWeek }}</a>
+            </td>
+            <td *ngIf="arrOrdrHeadersToExclude.indexOf('TargetEndDateTime') < 0">
+              <a (click)="doSetFilter($event, 'TargetEndDateTime', objOrdr.TargetEndDateTime)"
+                  title="{{ 'Set filter to variable' | translate:{ strHeader: 'Date and Time' | translate } }}"
+              >{{ objOrdr.TargetEndDateTime | date:'y-MM-dd' }}</a>
+            </td>
+            <td *ngIf="arrOrdrHeadersToExclude.indexOf('MachineId') < 0">
+              <a (click)="doSetFilter($event, 'MachineId', objOrdr.MachineId)"
+                  title="{{ 'Set filter to variable' | translate:{ strHeader: 'Workorder ID' | translate } }}"
+              >{{ objOrdr.MachineId }}</a>
+            </td>
+            <td *ngIf="arrOrdrHeadersToExclude.indexOf('WorkorderId') < 0">
+              <a (click)="doSetFilter($event, 'WorkorderId', objOrdr.WorkorderId)"
+                  title="{{ 'Set filter to variable' | translate:{ strHeader: 'Workorder ID' | translate } }}"
+              >{{ objOrdr.WorkorderId }}</a>
+            </td>
+            <td *ngIf="arrOrdrHeadersToExclude.indexOf('CurrentQuantity') < 0">
+              <a (click)="doSetFilter($event, 'CurrentQuantity', objOrdr.CurrentQuantity)"
+                  title="{{ 'Set filter to variable' | translate:{ strHeader: 'Amount Current' | translate } }}"
+              >{{ objOrdr.CurrentQuantity | number:0 }}</a>
+            </td>
+            <td *ngIf="arrOrdrHeadersToExclude.indexOf('TargetQuantity') < 0">
+              <a (click)="doSetFilter($event, 'TargetQuantity', objOrdr.TargetQuantity)"
+                  title="{{ 'Set filter to variable' | translate:{ strHeader: 'Amount Target' | translate } }}"
+              >{{ objOrdr.TargetQuantity | number:0 }}</a>
+            </td>
+            <td *ngIf="arrOrdrHeadersToExclude.indexOf('ArticleCode') < 0">
+              <a (click)="doSetFilter($event, 'ArticleCode', objOrdr.ArticleCode)"
+                  title="{{ 'Set filter to variable' | translate:{ strHeader: 'Article Code' | translate } }}"
+              >{{ objOrdr.ArticleCode }}</a>
+            </td>
+            <td *ngIf="arrOrdrHeadersToExclude.indexOf('surfaceText') < 0" class="no-break overflow-hidden">
+              <a (click)="doSetFilter($event, 'surfaceText', objOrdr.surfaceText)"
+                  title="{{ 'Set filter to variable' | translate:{ strHeader: 'Surface' | translate } }}"
+              >{{ objOrdr.surfaceText }}</a>
+            </td>
+          </tr>
+          <tr class="order-table-extra"
+              *ngIf="isOrderOpen(index)"
+              (click)="doToggleOpenOrder(index)"
+              [class.active]="isOrderOpen(index)">
+            <td></td>
+            <td colspan="8">
+              <ng-template ngFor let-strKey [ngForOf]="arrOrdrHeadersSecondary">
+                <dl *ngIf="objOrdr[strKey] && arrOrdrHeadersToExclude.indexOf(strKey) < 0">
+                  <dt [class.padding]="!isSortSecondaryKey() || isSortSecondaryKey() && strKey !== strSortKey">
+                    <a (click)="doToggleSort(strKey)" class="left" title="{{ strKey }}">
+                      <i [hidden]="!(isSortKeyEqual(strKey))" class="glyphicon glyphicon-chevron-up"></i>
+                      <i [hidden]="!(isSortKeyEqual('-' + strKey))" class="glyphicon glyphicon-chevron-down"></i>
+                      <span>&nbsp;{{ strKey | translate }}:</span>
+                    </a>
+                  </dt>
+                  <dd>
+                    <a (click)="doSetFilter($event, strKey, objOrdr[strKey])"
+                        title="Set filter to {{strKey}}"
+                    >{{ objOrdr[strKey] | translate }}</a>
+                  </dd>
+                </dl>
+              </ng-template>
+            </td>
+          </tr>
+          <tr class="order-table-secondary">
+            <td></td>
+            <td colspan="8">
+              <ng-template ngFor let-strKey [ngForOf]="arrOrdrHeadersSecondary">
+                <dl *ngIf="objOrdr[strKey] && (doGetSortKey() === strKey || doGetKeysForFilters().indexOf(strKey) >= 0 || isSearchKeyInValue(objOrdr[strKey]+''))">
+                  <dt>
+                    <a (click)="doToggleSort(strKey)" class="left" title="{{ strKey | translate }}">
+                      <i [hidden]="!(isSortKeyEqual(strKey))" class="glyphicon glyphicon-chevron-up"></i>
+                      <i [hidden]="!(isSortKeyEqual('-' + strKey))" class="glyphicon glyphicon-chevron-down"></i>
+                      <span>&nbsp;{{ strKey | translate }}:</span>
+                    </a>
+                  </dt>
+                  <dd>
+                    <a (click)="doSetFilter($event, strKey, objOrdr[strKey])"
+                        title="Set filter to {{strKey}}"
+                    >{{ objOrdr[strKey] | translate }}</a>
+                  </dd>
+                </dl>
+              </ng-template>
+            </td>
+          </tr>
+        </ng-template>
+      </tbody>
+    </table>
+
+    <div id="order-list-scroll-end" class="alert alert-info" *ngIf="!hasNoMoreRows">
+      <div [hidden]="!isAutoloadActive">{{ 'Scroll here to load more' | translate }} ...</div>
+      <button
+          class="btn btn-primary"
+          [hidden]="isAutoloadActive"
+          (click)="doReadOrdersToAdd()"
+      >{{ 'Click here to load more' | translate }} ...</button>
+    </div>
+  </div>
+</div>
+  

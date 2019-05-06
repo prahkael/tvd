@@ -1,0 +1,9 @@
+h4 {{ 'Search' | translate }}:
+form(name='fabricationsSearchForm')
+  .input-group
+    input#fabrications-search-text.form-control(#fabricationsSearchInput='', type='text', [value]='strSearch')
+    span.input-group-btn
+      button.btn.btn-primary(type='submit', (click)='doReadFabricationsWithSearch(fabricationsSearchInput.value)')
+        i.glyphicon.glyphicon-search
+      button.btn.btn-danger(type='button', *ngIf='strSearch', (click)='doResetSearch()')
+        i.glyphicon.glyphicon-remove

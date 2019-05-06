@@ -1,0 +1,8 @@
+apps:
+  - script   : ./src/server/server.js
+    name     : 'app'
+    instances: 1
+    exec_mode: cluster
+    watch    : ['src/data/*.csv']
+    env      :
+      NODE_ENV: production

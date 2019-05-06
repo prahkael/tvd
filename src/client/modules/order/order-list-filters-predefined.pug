@@ -1,0 +1,6 @@
+h4 {{ 'Predefined filters' | translate }}:
+ng-template(ngFor='', let-strOrdrHeader='', [ngForOf]='arrKeysOrdrHeadersAndValuesToFilterBy')
+  ng-template(ngFor='', let-strValue='', [ngForOf]='aarOrdrHeadersAndValuesToFilterBy[strOrdrHeader]')
+    span.text-muted {{ strOrdrHeader | translate }}:
+    |&nbsp;
+    span.text-primary {{ strValue | translate }}

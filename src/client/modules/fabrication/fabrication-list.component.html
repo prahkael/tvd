@@ -1,0 +1,316 @@
+<div class="page-header">
+  <h1>{{ 'Fabrication List' | translate }} <small>{{ 'Dates, times and other information' | translate }}</small></h1>
+</div>
+
+<br>
+<div class="row">
+  <div class="col-md-3 left">
+    <h4>{{ 'Actions' | translate }}:</h4>
+    <div>
+      <button
+          title="{{ 'Autoload' | translate }}"
+          class="btn"
+          [class.btn-success]="isAutoloadActive"
+          [class.btn-danger]="!isAutoloadActive"
+          (click)="isAutoloadActive = !isAutoloadActive">
+        <i [hidden]="!isAutoloadActive" class="glyphicon glyphicon-ok"></i>
+        <i [hidden]="isAutoloadActive"  class="glyphicon glyphicon-remove"></i>
+        <span>{{ 'Autoload' | translate }}</span>
+      </button>
+      <button
+          title="{{ 'Close all rows' | translate }}"
+          class="btn btn-primary"
+          [disabled]="arrFabrsOpen.length === 0"
+          (click)="doToggleAllFabrications(false)">
+        <i class="glyphicon glyphicon-eye-close"></i>
+      </button>
+      <button
+          title="{{ 'Toggle sort order' | translate }}"
+          class="btn btn-primary"
+          (click)="doToggleSort()">
+        <i [hidden]="doGetSortDirection() < 0" class="glyphicon glyphicon-chevron-down"></i>
+        <i [hidden]="doGetSortDirection() > 0" class="glyphicon glyphicon-chevron-up"></i>
+      </button>
+      <button
+          title="{{ 'Reset all' | translate }}"
+          class="btn btn-danger"
+          (click)="doRefreshFabrications()">
+        <i class="glyphicon glyphicon-remove"></i>
+      </button>
+    </div>
+  </div>
+  <div class="col-md-9 right">
+    <h4>{{ 'Search' | translate }}:</h4>
+    <form name="fabricationsSearchForm" (submit)="doReadFabricationsWithSearch(fabricationsSearchInput.value)">
+      <div class="input-group">
+        <input #fabricationsSearchInput id="fabrications-search-text" type="text" class="form-control" [value]="strSearch">
+        <span class="input-group-btn">
+          <button type="button" class="btn btn-primary" (click)="doReadFabricationsWithSearch(fabricationsSearchInput.value)">
+            <i class="glyphicon glyphicon-search"></i>
+          </button>
+          <button type="button" class="btn btn-danger"
+              *ngIf="strSearch"
+              (click)="doResetSearch()"
+            ><i class="glyphicon glyphicon-remove"></i>
+          </button>
+        </span>
+      </div>
+    </form>
+  </div>
+</div>
+
+<br>
+<div class="row" *ngIf="doGetKeysForFilters().length > 0">
+  <div class="col-md-12 left">
+    <h4>{{ 'User filters' | translate }}:</h4>
+    <ng-template ngFor let-strKey [ngForOf]="doGetKeysForFilters()">
+      <a (click)="doUnsetFilter(strKey)">
+        <span class="text-muted">{{ strKey | translate }}:</span>
+        <span class="text-primary">{{ doGetFilterValue(strKey) | translate }}</span>
+        <i class="glyphicon glyphicon-remove"></i></a>,
+      <span>&nbsp;</span>
+    </ng-template>
+    <a [hidden]="doGetKeysForFilters().length <= 0"
+        title="{{ 'Remove all filters' | translate }}"
+        (click)="doUnsetAllFilters()">
+      <span class="text-danger">{{ 'Remove all filters' | translate }}</span>
+      <i class="glyphicon glyphicon-remove"></i></a>
+  </div>
+</div>
+
+<br>
+<div class="row" *ngIf="arrKeysFabrHeadersAndValuesToFilterBy.length > 0">
+  <div class="col-md-12 left">
+    <h4>{{ 'Predefined filters' | translate }}:</h4>
+    <ng-template ngFor let-strFabrHeader [ngForOf]="arrKeysFabrHeadersAndValuesToFilterBy">
+      <ng-template ngFor let-strValue [ngForOf]="aarFabrHeadersAndValuesToFilterBy[strFabrHeader]">
+        <span class="text-muted">{{ strFabrHeader | translate }}:</span>
+        <span class="text-primary">{{ strValue | translate }}</span>
+        <span>&nbsp;</span>
+      </ng-template>
+    </ng-template>
+  </div>
+</div>
+
+<br>
+<div class="row">
+  <div id="fabrication-sidebar" class="col-md-3 left">
+    <h4>{{ 'Fast filters' | translate }}</h4>
+    <ng-template ngFor let-strFilterKey [ngForOf]="arrFabrSidebarFilters">
+      <h5>{{ strFilterKey | translate }}:</h5>
+      <ul>
+        <ng-template ngFor let-strFilter [ngForOf]="aarFabrSidebarFilters[strFilterKey]">
+          <li [class.active]="doGetFilterValue(strFilterKey) === strFilter">
+            <a (click)="doSetFilter($event, strFilterKey, strFilter)">{{ strFilter | translate }}</a>
+          </li>
+        </ng-template>
+      </ul>
+    </ng-template>
+  </div>
+
+  <div class="col-md-9 overflow-hidden left">
+    <table class="fabrications table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <!--<th>
+            <a (click)="doToggleSort('_id')"
+              title="{{ 'ID' | translate }}">
+              <i [hidden]="!(isSortKeyEqual('_id'))" class="glyphicon glyphicon-chevron-up"></i>
+              <i [hidden]="!(isSortKeyEqual('-_id'))" class="glyphicon glyphicon-chevron-down"></i>
+              <span>{{ 'ID' | translate }}</span>
+            </a>
+          </th>-->
+          <th *ngIf="arrFabrHeadersToExclude.indexOf('TargetEndDateTime') < 0">
+            <a (click)="doToggleSort('TargetEndDateTime')"
+              title="{{ 'CW' | translate }}">
+              <i [hidden]="!(isSortKeyEqual('TargetEndDateTime'))" class="glyphicon glyphicon-chevron-up"></i>
+              <i [hidden]="!(isSortKeyEqual('-TargetEndDateTime'))" class="glyphicon glyphicon-chevron-down"></i>
+              <span>{{ 'CW' | translate }}</span>
+            </a>
+          </th>
+          <th *ngIf="arrFabrHeadersToExclude.indexOf('TargetEndDateTime') < 0">
+            <a (click)="doToggleSort('TargetEndDateTime')"
+              title="{{ 'Date' | translate }}">
+              <i [hidden]="!(isSortKeyEqual('TargetEndDateTime'))" class="glyphicon glyphicon-chevron-up"></i>
+              <i [hidden]="!(isSortKeyEqual('-TargetEndDateTime'))" class="glyphicon glyphicon-chevron-down"></i>
+              <span>{{ 'Date' | translate }}</span>
+            </a>
+          </th>
+          <th *ngIf="arrFabrHeadersToExclude.indexOf('MachineId') < 0">
+            <a (click)="doToggleSort('MachineId')"
+              title="{{ 'Workorder ID' | translate }}">
+              <i [hidden]="!(isSortKeyEqual('MachineId'))" class="glyphicon glyphicon-chevron-up"></i>
+              <i [hidden]="!(isSortKeyEqual('-MachineId'))" class="glyphicon glyphicon-chevron-down"></i>
+              <span>{{ 'Machine ID' | translate }}</span>
+            </a>
+          </th>
+          <th *ngIf="arrFabrHeadersToExclude.indexOf('WorkorderId') < 0">
+            <a (click)="doToggleSort('WorkorderId')"
+              title="{{ 'Workorder ID' | translate }}">
+              <i [hidden]="!(isSortKeyEqual('WorkorderId'))" class="glyphicon glyphicon-chevron-up"></i>
+              <i [hidden]="!(isSortKeyEqual('-WorkorderId'))" class="glyphicon glyphicon-chevron-down"></i>
+              <span>{{ 'Workorder ID' | translate }}</span>
+            </a>
+          </th>
+          <th *ngIf="arrFabrHeadersToExclude.indexOf('CurrentQuantity') < 0">
+            <a (click)="doToggleSort('CurrentQuantity')"
+              title="{{ 'Amount current' | translate }}">
+              <i [hidden]="!(isSortKeyEqual('CurrentQuantity'))" class="glyphicon glyphicon-chevron-up"></i>
+              <i [hidden]="!(isSortKeyEqual('-CurrentQuantity'))" class="glyphicon glyphicon-chevron-down"></i>
+              <span>{{ 'Amount current' | translate }}</span>
+            </a>
+          </th>
+          <th *ngIf="arrFabrHeadersToExclude.indexOf('TargetQuantity') < 0">
+            <a (click)="doToggleSort('TargetQuantity')"
+              title="{{ 'Amount target' | translate }}">
+              <i [hidden]="!(isSortKeyEqual('TargetQuantity'))" class="glyphicon glyphicon-chevron-up"></i>
+              <i [hidden]="!(isSortKeyEqual('-TargetQuantity'))" class="glyphicon glyphicon-chevron-down"></i>
+              <span>{{ 'Amount target' | translate }}</span>
+            </a>
+          </th>
+          <th *ngIf="arrFabrHeadersToExclude.indexOf('ArticleCode') < 0">
+            <a (click)="doToggleSort('ArticleCode')"
+              title="{{ 'Article code' | translate }}">
+              <i [hidden]="!(isSortKeyEqual('ArticleCode'))" class="glyphicon glyphicon-chevron-up"></i>
+              <i [hidden]="!(isSortKeyEqual('-ArticleCode'))" class="glyphicon glyphicon-chevron-down"></i>
+              <span>{{ 'Article code' | translate }}</span>
+            </a>
+          </th>
+          <th *ngIf="arrFabrHeadersToExclude.indexOf('surfaceText') < 0">
+            <a (click)="doToggleSort('surfaceText')"
+              title="{{ 'Description' | translate }}">
+              <i [hidden]="!(isSortKeyEqual('surfaceText'))" class="glyphicon glyphicon-chevron-up"></i>
+              <i [hidden]="!(isSortKeyEqual('-surfaceText'))" class="glyphicon glyphicon-chevron-down"></i>
+              <span>{{ 'Description' | translate }}</span>
+            </a>
+          </th>
+        </tr>
+      </thead>
+      <tbody *ngIf="arrFabrs.length <= 0">
+        <td colspan="9">
+          <div class="alert alert-info">{{ 'No fabrication data found' | translate }}!</div>
+        </td>
+      </tbody>
+      <tbody *ngIf="arrFabrs.length > 0">
+        <ng-template
+            ngFor
+            let-objFabr
+            let-index="index"
+            [ngForOf]="arrFabrs"
+            [ngForTrackBy]="doTrackRows">
+          <tr class="fabrication-table-row border"
+              (click)="doToggleOpenFabrication(index)"
+              [class.gray]="isSortSecondaryKey() || isFilterSecondaryKey()"
+              [class.active]="isFabricationOpen(index)">
+
+            <td>{{ index + 1 }}</td>
+            <!--<td>
+              <a (click)="doSetFilter($event, '_id', objFabr._id)"
+                  title="{{ 'Set filter to variable' | translate:{ strHeader: '_id' } }}"
+              >{{ objFabr._id }}</a>
+            </td>-->
+            <td *ngIf="arrFabrHeadersToExclude.indexOf('TargetEndDateTime') < 0">
+              <a (click)="doSetFilter($event, 'calendarYear', objFabr.calendarYear)"
+                  title="{{ 'Set filter to variable' | translate:{ strHeader: 'Calendar Year' | translate } }}"
+              >{{ objFabr.calendarYear }}</a>
+              <span>/</span>
+              <a (click)="doSetFilter($event, 'calendarWeek', objFabr.calendarWeek)"
+                  title="{{ 'Set filter to variable' | translate:{ strHeader: 'Calendar Week' | translate } }}"
+              >{{ objFabr.calendarWeek }}</a>
+            </td>
+            <td *ngIf="arrFabrHeadersToExclude.indexOf('TargetEndDateTime') < 0">
+              <a (click)="doSetFilter($event, 'TargetEndDateTime', objFabr.TargetEndDateTime)"
+                  title="{{ 'Set filter to variable' | translate:{ strHeader: 'Date and Time' | translate } }}"
+              >{{ objFabr.TargetEndDateTime | date:'y-MM-dd' }}</a>
+            </td>
+            <td *ngIf="arrFabrHeadersToExclude.indexOf('MachineId') < 0">
+              <a (click)="doSetFilter($event, 'MachineId', objFabr.MachineId)"
+                  title="{{ 'Set filter to variable' | translate:{ strHeader: 'Workorder ID' | translate } }}"
+              >{{ objFabr.MachineId }}</a>
+            </td>
+            <td *ngIf="arrFabrHeadersToExclude.indexOf('WorkorderId') < 0">
+              <a (click)="doSetFilter($event, 'WorkorderId', objFabr.WorkorderId)"
+                  title="{{ 'Set filter to variable' | translate:{ strHeader: 'Workorder ID' | translate } }}"
+              >{{ objFabr.WorkorderId }}</a>
+            </td>
+            <td *ngIf="arrFabrHeadersToExclude.indexOf('CurrentQuantity') < 0">
+              <a (click)="doSetFilter($event, 'CurrentQuantity', objFabr.CurrentQuantity)"
+                  title="{{ 'Set filter to variable' | translate:{ strHeader: 'Amount Current' | translate } }}"
+              >{{ objFabr.CurrentQuantity | number:0 }}</a>
+            </td>
+            <td *ngIf="arrFabrHeadersToExclude.indexOf('TargetQuantity') < 0">
+              <a (click)="doSetFilter($event, 'TargetQuantity', objFabr.TargetQuantity)"
+                  title="{{ 'Set filter to variable' | translate:{ strHeader: 'Amount Target' | translate } }}"
+              >{{ objFabr.TargetQuantity | number:0 }}</a>
+            </td>
+            <td *ngIf="arrFabrHeadersToExclude.indexOf('ArticleCode') < 0">
+              <a (click)="doSetFilter($event, 'ArticleCode', objFabr.ArticleCode)"
+                  title="{{ 'Set filter to variable' | translate:{ strHeader: 'Article Code' | translate } }}"
+              >{{ objFabr.ArticleCode }}</a>
+            </td>
+            <td *ngIf="arrFabrHeadersToExclude.indexOf('surfaceText') < 0" class="no-break overflow-hidden">
+              <a (click)="doSetFilter($event, 'surfaceText', objFabr.surfaceText)"
+                  title="{{ 'Set filter to variable' | translate:{ strHeader: 'Surface' | translate } }}"
+              >{{ objFabr.surfaceText }}</a>
+            </td>
+          </tr>
+          <tr class="fabrication-table-extra"
+              *ngIf="isFabricationOpen(index)"
+              (click)="doToggleOpenFabrication(index)"
+              [class.active]="isFabricationOpen(index)">
+            <td></td>
+            <td colspan="8">
+              <ng-template ngFor let-strKey [ngForOf]="arrFabrHeadersSecondary">
+                <dl *ngIf="objFabr[strKey] && arrFabrHeadersToExclude.indexOf(strKey) < 0">
+                  <dt [class.padding]="!isSortSecondaryKey() || isSortSecondaryKey() && strKey !== strSortKey">
+                    <a (click)="doToggleSort(strKey)" class="left" title="{{ strKey }}">
+                      <i [hidden]="!(isSortKeyEqual(strKey))" class="glyphicon glyphicon-chevron-up"></i>
+                      <i [hidden]="!(isSortKeyEqual('-' + strKey))" class="glyphicon glyphicon-chevron-down"></i>
+                      <span>&nbsp;{{ strKey | translate }}:</span>
+                    </a>
+                  </dt>
+                  <dd>
+                    <a (click)="doSetFilter($event, strKey, objFabr[strKey])"
+                        title="Set filter to {{strKey}}"
+                    >{{ objFabr[strKey] | translate }}</a>
+                  </dd>
+                </dl>
+              </ng-template>
+            </td>
+          </tr>
+          <tr class="fabrication-table-secondary">
+            <td></td>
+            <td colspan="8">
+              <ng-template ngFor let-strKey [ngForOf]="arrFabrHeadersSecondary">
+                <dl *ngIf="objFabr[strKey] && (doGetSortKey() === strKey || doGetKeysForFilters().indexOf(strKey) >= 0 || isSearchKeyInValue(objFabr[strKey]+''))">
+                  <dt>
+                    <a (click)="doToggleSort(strKey)" class="left" title="{{ strKey | translate }}">
+                      <i [hidden]="!(isSortKeyEqual(strKey))" class="glyphicon glyphicon-chevron-up"></i>
+                      <i [hidden]="!(isSortKeyEqual('-' + strKey))" class="glyphicon glyphicon-chevron-down"></i>
+                      <span>&nbsp;{{ strKey | translate }}:</span>
+                    </a>
+                  </dt>
+                  <dd>
+                    <a (click)="doSetFilter($event, strKey, objFabr[strKey])"
+                        title="Set filter to {{strKey}}"
+                    >{{ objFabr[strKey] | translate }}</a>
+                  </dd>
+                </dl>
+              </ng-template>
+            </td>
+          </tr>
+        </ng-template>
+      </tbody>
+    </table>
+
+    <div id="fabrication-list-scroll-end" class="alert alert-info" *ngIf="!hasNoMoreRows">
+      <div [hidden]="!isAutoloadActive">{{ 'Scroll here to load more' | translate }} ...</div>
+      <button
+          class="btn btn-primary"
+          [hidden]="isAutoloadActive"
+          (click)="doReadFabricationsToAdd()"
+      >{{ 'Click here to load more' | translate }} ...</button>
+    </div>
+  </div>
+</div>

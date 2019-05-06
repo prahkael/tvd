@@ -1,0 +1,9 @@
+h4 {{ 'Search' | translate }}:
+form(name='ordersSearchForm', (submit)='doReadOrdersWithSearch(ordersSearchInput.value)')
+  .input-group
+    input#orders-search-text.form-control(#ordersSearchInput='', type='text', [value]='strSearch')
+    span.input-group-btn
+      button.btn.btn-primary(type='submit')
+        i.glyphicon.glyphicon-search
+      button.btn.btn-danger(type='button', *ngIf='strSearch', (click)='doResetSearch()')
+        i.glyphicon.glyphicon-remove

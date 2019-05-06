@@ -1,0 +1,175 @@
+.orders thead th,
+.orders tbody td {
+  text-align: right;
+  /* width: 2%; */
+}
+
+.orders thead th:nth-child(2),
+.orders tbody td:nth-child(2) {
+  text-align: center;
+}
+
+/* .orders thead th:nth-child(4),
+.orders thead th:nth-child(5),
+.orders thead th:nth-child(6),
+.orders thead th:nth-child(7),
+.orders tbody td:nth-child(4),
+.orders tbody td:nth-child(5),
+.orders tbody td:nth-child(6),
+.orders tbody td:nth-child(7) {
+  text-align: right;
+} */
+/* .orders thead th:nth-child(3),
+.orders tbody th:nth-child(3) {
+  min-width: 104px;
+} */
+.orders thead th:nth-child(9),
+.orders tbody td:nth-child(9) {
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.orders.table th.highlighted,
+.orders.table td.highlighted {
+  background-color: rgba(209, 233, 253, 0.25);
+}
+
+.orders th:hover {
+  cursor: pointer;
+}
+.orders tr {
+  cursor: pointer;
+}
+.orders td {
+  border: none;
+}
+.orders th,
+.orders .nowrap-ellipsis {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap;
+}
+.orders .nowrap-ellipsis:hover .nowrap-ellipsis-hover {
+  display: inline-block;
+}
+/*.orders tr:nth-child(3n+4) {*/
+.orders tr.border {
+  border-top: 1px solid #ddd;
+}
+.orders tr.active,
+.orders tr:hover {
+  background-color: #f4f4f4;
+}
+
+.orders tr:first-child:hover {
+  background-color: inherit;
+}
+
+.order-table-row.gray * {
+  color: #bbb;
+}
+.order-table-row.gray:hover * {
+  color: black !important;
+}
+
+.order-table-secondary dl,
+.order-table-extra dl {
+  overflow: hidden;
+}
+.order-table-secondary dl *,
+.order-table-extra dl * {
+  float: left;
+}
+.order-table-secondary dl dt,
+.order-table-extra dl dt {
+  width: 30%;
+}
+.order-table-extra dl:nth-child(2n+1) {
+  background-color: #f4f4f4;
+}
+.order-table-extra dt.padding {
+  padding-left: 22px;
+}
+.order-table-secondary td {
+  padding-bottom: 0;
+  padding-top: 0;
+}
+.order-table-secondary,
+.order-table-secondary:hover {
+  background-color: #e8efff !important;
+}
+
+#order-list-scroll-end {
+  text-align: center !important;
+  margin: 4rem 0;
+}
+
+#fast-fitlers {
+  -webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.25);
+  -moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.25);
+  box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.25);
+  left: 1rem;
+  margin-top: .5rem;
+  position: absolute;
+  z-index: 10000;
+}
+#fast-fitlers .btn-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}
+#fast-fitlers h4 {
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 9.5px;
+  margin-bottom: 1.4rem;
+}
+#fast-fitlers h5 {
+  text-decoration: underline;
+  margin-bottom: .5rem;
+}
+#fast-fitlers ul {
+  list-style: none;
+  padding-left: 0;
+}
+#fast-fitlers ul li:before {
+    content: "+";
+    margin-right: 4px;
+}
+#fast-fitlers ul li.active:before,
+#fast-fitlers ul li.active a {
+  color: #bbb !important;
+}
+
+.orders.table .priority {
+  border-radius: 4px;
+  padding: .4rem;
+}
+.orders.table .priority-immediate {
+  background-color: red;
+  color: white;
+}
+.orders.table .priority-major {
+  background-color: orange;
+  color: white;
+}
+.orders.table .priority-average {
+  background-color: yellow;
+  color: black;
+}
+.orders.table .priority-minor {
+  background-color: green;
+  color: white;
+}
+
+.orders.table .priority-selector {
+  background-color: white;
+  box-shadow: 0 0 2px 2px #ddd;
+  padding: 1rem;
+  position: absolute;
+  z-index: 100;
+}
+.orders.table .priority-selector .priority {
+  margin-right: .2rem;
+  padding: .4rem;
+}

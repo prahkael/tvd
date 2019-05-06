@@ -1,0 +1,14 @@
+h4 {{ 'User filters' | translate }}:
+ng-template(ngFor='', let-strKey='', [ngForOf]='doGetKeysForFilters()')
+  a((click)='doUnsetFilter(strKey)')
+    span.text-muted {{ strKey | translate }}:
+    |&nbsp;
+    span.text-primary {{ doGetFilterValue(strKey) | translate }}
+    |&nbsp;
+    i.glyphicon.glyphicon-remove
+  |,&nbsp;
+  span  
+a([hidden]='doGetKeysForFilters().length <= 0', title="{{ 'Remove all filters' | translate }}", (click)='doUnsetAllFilters()')
+  span.text-danger {{ 'Remove all filters' | translate }}
+  |&nbsp;
+  i.glyphicon.glyphicon-remove

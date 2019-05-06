@@ -1,0 +1,39 @@
+<nav class="navbar navbar-default navbar-top">
+  <div class="container-fluid">
+
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" routerLink="/">{{ 'OMP Visualization' | translate }}</a>
+    </div>
+
+    <div class="collapse navbar-collapse" *ngIf="isSignedInLocal() | async">
+      <ul class="nav navbar-nav">
+        <li *ngIf="isAuthorizedForURL('fabrications') | async"><a
+            routerLink="/fabrications"
+            routerLinkActive="active"
+        >{{ 'Fabrications' | translate }}</a></li>
+        <li *ngIf="isAuthorizedForURL('orders') | async"><a
+          routerLink="/orders"
+          routerLinkActive="active"
+        >{{ 'Orders' | translate }}</a></li>
+        <li *ngIf="isAuthorizedForURL('users') | async"><a
+            routerLink="/users"
+            routerLinkActive="active"
+        >{{ 'Users' | translate }}</a></li>
+        <li *ngIf="isAuthorizedForURL('roles') | async"><a
+            routerLink="/roles"
+            routerLinkActive="active"
+        >{{ 'Roles' | translate }}</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="right"><a (click)="doSignOut()">{{ 'Sign out' | translate }}</a></li>
+      </ul>
+    </div>
+
+  </div>
+</nav>

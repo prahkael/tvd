@@ -1,0 +1,6 @@
+h4 {{ 'Predefined filters' | translate }}:
+ng-template(ngFor='', let-strFabrHeader='', [ngForOf]='arrKeysFabrHeadersAndValuesToFilterBy')
+  ng-template(ngFor='', let-strValue='', [ngForOf]='aarFabrHeadersAndValuesToFilterBy[strFabrHeader]')
+    span.text-muted {{ strFabrHeader | translate }}:
+    |&nbsp;
+    span.text-primary {{ strValue | translate }}

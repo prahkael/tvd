@@ -1,0 +1,85 @@
+<div class="page-header">
+  <h1>{{ 'Roles' | translate }} <small>{{ 'Admin roles for users' | translate }}</small></h1>
+</div>
+
+<div *ngIf="!arrRoles || arrRoles.length <= 0" class="alert alert-info">
+  {{ 'Info' | translate }}: {{ 'No roles found or defined yet' | translate }}!
+</div>
+
+<table *ngIf="arrRoles && arrRoles.length > 0" class="table table-striped">
+  <thead>
+    <tr>
+      <th>{{ 'Admin' | translate }}?</th>
+      <th>{{ 'Role name' | translate }}</th>
+      <th>{{ 'Rights' | translate }}</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let role of arrRoles" [class.success]="role.isAdmin">
+      <td>
+        <i *ngIf="role.isAdmin"  class="glyphicon glyphicon-ok text-success"></i>
+        <i *ngIf="!role.isAdmin" class="glyphicon glyphicon-remove text-danger"></i>
+      </td>
+      <td>{{ role.strName }}</td>
+      <td class="role-list-td">
+
+        <div *ngIf="role.arrResources && role.arrResources.length > 0">
+          <h5 class="text-muted">{{ 'Resources' | translate }}: </h5>
+          <ng-template ngFor let-resource [ngForOf]="role.arrResources">
+            <span class="btn-special">{{ resource }}</span>
+          </ng-template>
+          <div class="vmargin-1rem"></div>
+        </div>
+
+        <div *ngIf="role.arrFabrHeaders && role.arrFabrHeaders.length > 0">
+          <h5 class="text-muted">{{ 'Excluded fabrication columns' | translate }}: </h5>
+          <ng-template ngFor let-strHeader [ngForOf]="role.arrFabrHeaders">
+            <span class="btn-special">{{ strHeader | translate }}</span>
+          </ng-template>
+          <div class="vmargin-1rem"></div>
+        </div>
+
+        <div *ngIf="getKeysOfAar(role.aarFabrHeadersAndValues).length > 0">
+          <h5 class="text-muted">{{ 'Filtered fabrication fields' | translate }}: </h5>
+          <ng-template ngFor let-strKey [ngForOf]="getKeysOfAar(role.aarFabrHeadersAndValues)">
+            <span class="btn-special" *ngFor="let strValue of role.aarFabrHeadersAndValues[strKey]"
+            >{{ strKey | translate }}: {{ strValue }}</span>
+          </ng-template>
+        </div>
+
+        <div *ngIf="role.arrOrdrHeaders && role.arrOrdrHeaders.length > 0">
+          <h5 class="text-muted">{{ 'Excluded order columns' | translate }}: </h5>
+          <ng-template ngFor let-strHeader [ngForOf]="role.arrOrdrHeaders">
+            <span class="btn-special">{{ strHeader | translate }}</span>
+          </ng-template>
+          <div class="vmargin-1rem"></div>
+        </div>
+
+        <div *ngIf="getKeysOfAar(role.aarOrdrHeadersAndValues).length > 0">
+          <h5 class="text-muted">{{ 'Filtered order fields' | translate }}: </h5>
+          <ng-template ngFor let-strKey [ngForOf]="getKeysOfAar(role.aarOrdrHeadersAndValues)">
+            <span class="btn-special" *ngFor="let strValue of role.aarOrdrHeadersAndValues[strKey]"
+            >{{ strKey | translate }}: {{ strValue }}</span>
+          </ng-template>
+        </div>
+
+      </td>
+      <td class="right no-break">
+        <button class="btn btn-xs btn-primary" [routerLink]="['/roles', role._id]">
+          <i class="glyphicon glyphicon-pencil"></i>
+        </button>
+        <button class="btn btn-xs btn-danger" (click)="doDeleteRole(role._id)">
+          <i class="glyphicon glyphicon-trash"></i>
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="right">
+  <button class="btn btn-primary" routerLink="/roles/new">
+    <i class="glyphicon glyphicon-plus"></i>
+    <span>{{ 'Create new role' | translate }}</span>
+  </button>
+</div>

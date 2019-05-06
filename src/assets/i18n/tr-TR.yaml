@@ -1,0 +1,130 @@
+# Common
+OMP Visualization                                : OMP Fertigungsvisualisation
+Search                                           : Suchen
+Actions                                          : Aktionen
+Admin                                            : Admin
+Is admin                                         : Ist Admin
+Edit                                             : Bearbeiten
+Create                                           : Erstellen
+Save                                             : Speichern
+Update                                           : Aktualisieren
+Delete                                           : Löschen
+Generate                                         : Erstellen
+Copy                                             : Kopieren
+Common                                           : Allgemein
+Resources                                        : Ressourcen
+Reset                                            : Zurücksetzen
+Reset all                                        : Alles zurücksetzen
+Back                                             : Zurück
+Fabrication                                      : Fertigung
+Fabrications                                     : Fertigungen
+Sign in                                          : Login
+Sign out                                         : Logout
+Info                                             : Info
+undefined                                        : nicht definiert
+
+# Users and roles
+User                                             : Benutzer
+Users                                            : Benutzer
+Role                                             : Rolle
+Roles                                            : Rollen
+Role name                                        : Rollenname
+Role Detail                                      : Rollendetail
+Username                                         : Benutzername
+Password                                         : Passwort
+Name                                             : Name
+Email                                            : E-Mail
+First name                                       : Vorname
+Last name                                        : Nachname
+Rights                                           : Rechte
+Resource rights                                  : Resourcenrechte
+Column rights                                    : Spaltenrechte
+Field rights                                     : Feldrechte
+Select column to exclude                         : Spalte zum Ausschließen auswählen
+Select column to filter for                      : Spalte für Filter auswählen
+Create new user                                  : Neuen Benutzer erstellen
+Create new role                                  : Neue Rolle erstellen
+Excluded fabrication columns                     : Ausgeschlossene Spalten
+Filtered fabrication fields                      : Vordefinierte Filter
+
+# Long
+Admin users and their attributes                 : Verwalte Benutzer und ihre Eigenschaften
+Admin roles for users                            : Verwalte die Rollen für Benutzer
+Create a new user or edit an existing one        : Erstelle einen neuen Benutzer oder bearbeite einen existierenden
+Create a new role or edit an existing one        : Erstelle eine neue Rolle oder bearbeite eine existierende
+No roles found or defined yet                    : Keine Rollen gefunden oder keine Rollen definiert
+Define field value name for filter               : Definiere den Wert des Feldes für den Filter
+
+# Fabrication
+Fabrication List                                 : Fertigungsübersicht
+Dates, times and other information               : Termine, Zeiten und andere Informationen
+No fabrication data found                            : Keine Fertigungsdaten gefunden
+Autoload                                         : Autoload
+Close all rows                                   : Alle Zeilen schließen
+Toggle sort order                                : Sortierreihenfolder wechseln
+User filters                                     : Benutzerfilter
+Predefined filters                               : Vordefinierter Filter
+Remove all filters                               : Alle filter entfernen
+Set filter to variable                           : Filter setzen für Spalte «{{ strHeader }}»
+Scroll here to load more                         : Scrollen um weiter zu laden
+Click here to load more                          : Klicken um weiter zu laden
+CW                                               : KW
+Date                                             : Datum
+Description                                      : Anmerkungen
+Date and Time                                    : Datum und Zeit
+WorkorderId                                      : Auftrags-ID
+Workorder ID                                     : Auftrags-ID
+Amount current                                   : Arbeitsmenge
+CurrentQuantity                                  : Arbeitsmenge
+Amount target                                    : Sollmenge
+TargetQuantity                                   : Sollmenge
+Article code                                     : Artikelcode
+ArticleCode                                      : Artikelcode
+Article Description                              : Artikelbeschreibung
+ArticleDescription                               : Artikelbeschreibung
+Surface                                          : Oberfläche
+surfaceText                                      : Oberfläche
+Calendar year                                    : Kalendarahr
+calendarYear                                     : Kalendarahr
+Calendar week                                    : Kalenderwoche
+calendarWeek                                     : Kalenderwoche
+Status                                           : Status
+OPStatus                                         : Status
+Scrap                                            : Ausschuss
+Drawing                                          : Zeichnung
+Drawing index                                    : Index
+DrawingIndex                                     : Index
+MachineId                                        : Maschinen-ID
+Machine ID                                       : Maschinen-ID
+Machine name                                     : Maschinenbezeichnung
+MachineName                                      : Maschinenbezeichnung
+Start date and time                              : Starttermin
+TargetBeginDateTime                              : Starttermin
+Target date and time                             : Zieltermin
+TargetEndDateTime                                : Zieltermin
+Personal                                         : Personal
+Machine group                                    : Maschinengruppe
+machineGroup                                     : Maschinengruppe
+Turning machine                                  : Drehmaschine
+TurningMachine                                   : Drehmaschine
+Turning machine responsible                      : Zuständig
+TurningMachineResponsible                        : Zuständig
+Operation code text                              : Abfertigungsanweisung
+OperationcodeText                                : Abfertigungsanweisung
+
+# Machine Groups
+curveRow1                                        : Kurvenreihe 1
+curveRow2                                        : Kurvenreihe 2
+curveRow3                                        : Kurvenreihe 3
+curveRow4                                        : Kurvenreihe 4
+multiSpindle                                     : Mehrfachspindler
+curveShort                                       : Kurve kurz
+CNCTNL12H2                                       : CNC TNL 12 H2
+CNCTNL12H1+3                                     : CNC TNL 12 H1 und H3
+CNCTNL118+                                       : CNC TNL 118 und folgende
+QS                                               : Qualitätssicherung
+PS                                               : Paketstation
+Waage                                            : Waage
+Waage_QS                                         : Waage QS
+Waage_Reinigung                                  : Waage Reinigung
+Waage_Versand                                    : Waage Versand

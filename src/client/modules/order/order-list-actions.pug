@@ -1,0 +1,20 @@
+h4 {{ 'Actions' | translate }}:
+div
+  button.btn.btn-primary(title="{{ 'Toggle fast filters' | translate }}", (click)="isFastFilterOpen = !isFastFilterOpen", [class.btn-primary]="!isFastFilterOpen")
+    i.glyphicon.glyphicon-th-list
+  |&nbsp;
+  button.btn.btn-primary(title="{{ 'Close all rows' | translate }}", [disabled]='arrOrdrsOpen.length === 0', (click)='doToggleAllOrders(false)')
+    i.glyphicon.glyphicon-eye-close
+  |&nbsp;
+  button.btn.btn-primary(title="{{ 'Toggle sort order' | translate }}", (click)='doToggleSort()')
+    i.glyphicon.glyphicon-chevron-down([hidden]='doGetSortDirection() < 0')
+    i.glyphicon.glyphicon-chevron-up([hidden]='doGetSortDirection() > 0')
+  |&nbsp;
+  button.btn.btn-danger(title="{{ 'Reset all' | translate }}", (click)='doRefreshOrders()')
+    i.glyphicon.glyphicon-remove
+  |&nbsp;|&nbsp;
+  button.btn(title="{{ 'Autoload' | translate }}", [class.btn-success]='isAutoloadActive', [class.btn-danger]='!isAutoloadActive', (click)='isAutoloadActive = !isAutoloadActive')
+    i.glyphicon.glyphicon-ok([hidden]='!isAutoloadActive')
+    i.glyphicon.glyphicon-remove([hidden]='isAutoloadActive')
+    |&nbsp;
+    span {{ 'Autoload' | translate }}

@@ -1,0 +1,430 @@
+<div class="page-header">
+  <h1>{{ 'Role Detail' | translate }} <small>{{ 'Create a new role or edit an existing one' | translate }}</small></h1>
+</div>
+<div class="left">
+  <button type="button" class="btn btn-primary" routerLink="/roles">
+    <span class="glyphicon glyphicon-share-alt icon-flipped"></span>
+    <span>{{ 'Back' | translate }}</span>
+  </button>
+</div>
+
+<form
+    class="form-horizontal"
+    novalidate
+    name="formRoleDetail"
+    #formRoleDetail="ngForm"
+    (submit)="doCreateOrUpdateRole()">
+
+  <h3 class="separator">{{ 'Common' | translate }}</h3>
+  <div class="form-group">
+    <label class="col-sm-2 control-label left-important" for="form-role-detail-name">{{ 'Name' | translate }}:</label>
+    <div class="col-md-10">
+      <input
+          type="text"
+          class="form-control"
+          id="form-role-detail-name"
+          name="formRoleDetailName"
+          (keyup.enter)="null"
+          [(ngModel)]="role.strName">
+      <!--<div class="alert alert-info">Please enter a role name to test whether it exists.</div>-->
+    </div>
+  </div>
+  <div class="form-group">
+    <label
+        class="col-sm-2 control-label left-important"
+        for="form-role-detail-is-admin"
+    >{{ 'Admin' | translate }}:</label>
+
+    <div class="col-md-10">
+      <div class="checkbox">
+        <label for="form-role-detail-is-admin">
+          <input type="checkbox"
+              id="form-role-detail-is-admin"
+              name="formRoleDetailIsAdmin"
+              [(ngModel)]="role.isAdmin"
+          >{{ 'Is admin' | translate }}
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!--// Resources -->
+  <h3 class="separator">{{ 'Resources' | translate }}</h3>
+  <div class="form-group">
+    <label
+        class="col-sm-2 control-label left-important"
+        for="form-role-detail-rights">
+      {{ 'Resource rights' | translate }}:
+    </label>
+
+    <div class="col-md-10">
+      <ng-template ngFor let-resource [ngForOf]="arrResourcesAll">
+        <button
+            type="button"
+            class="btn btn-default fabr-button"
+            [disabled]="role.isAdmin"
+            (click)="role.toggleResource(resource)">
+
+          <span *ngIf="role.isResourceInRole(resource)" class="text-success">
+            <i class="glyphicon glyphicon-ok"></i>
+            {{ resource }}
+          </span>
+          <span *ngIf="!role.isResourceInRole(resource)" class="text-danger">
+            <i class="glyphicon glyphicon-remove"></i>
+            {{ resource }}
+          </span>
+        </button>
+      </ng-template>
+      <button
+          type="button"
+          class="btn btn-danger fabr-button"
+          (click)="role.removeAllResources()">
+        <i class="glyphicon glyphicon-remove"></i>
+      </button>
+
+      <div class="vmargin-half-rem"></div>
+      <!--<div class="alert alert-info">Please select the resource
+          access rights the user has for routing and API.</div>-->
+    </div>
+  </div>
+  <!--// Resources end -->
+
+  <!--// Fabrication headers -->
+  <h3 class="separator">{{ 'Fabrication' | translate }}</h3>
+  <div class="form-group">
+    <label
+        class="col-sm-2 control-label left-important"
+        for="form-role-detail-rights">{{ 'Column rights' | translate }}:</label>
+
+    <div class="col-md-10">
+      <div>
+        <select
+            class="form-control"
+            name="fabrHeaderToBeAdded"
+            (change)="doAddFabrHeader()"
+            [disabled]="role.isAdmin"
+            [(ngModel)]="fabrHeaderToBeAdded">
+
+          <option
+              value=""
+              class="text-muted"
+              [selected]="fabrHeaderToBeAdded === ''"
+          ><em>{{ 'Select column to exclude' | translate }}:</em></option>
+          <option
+              *ngFor="let fabrHeader of arrFabrHeadersAll"
+              [hidden]="role.isFabrHeaderInRole(fabrHeader)"
+              [value]="fabrHeader"
+          >{{ fabrHeader | translate }}</option>
+        </select>
+      </div>
+      <div class="vmargin-half-rem" [hidden]="role?.arrFabrHeaders?.length <= 0"></div>
+      <div>
+        <ng-template
+            ngFor
+            let-fabrHeader
+            [ngForOf]="role.arrFabrHeaders">
+
+          <button
+              type="button"
+              class="btn btn-default fabr-button"
+              [disabled]="role.isAdmin"
+              (click)="role.removeFabrHeader(fabrHeader)">
+
+            <span><i class="glyphicon glyphicon-remove text-danger"></i></span>
+            <span>{{ fabrHeader | translate }}</span>
+          </button>
+        </ng-template>
+        <button type="button" class="btn btn-danger fabr-button"
+            [hidden]="role?.arrFabrHeaders?.length <= 0"
+            (click)="role.removeAllFabrHeaders()">
+          <i class="glyphicon glyphicon-remove"></i>
+        </button>
+      </div>
+      <div class="vmargin-1rem"></div>
+      <!--<div class="alert alert-info">Please select the columns to exclude from the table.</div>-->
+    </div>
+  </div>
+  <!-- Fabrication headers end -->
+
+  <!-- Fabrication headers and values -->
+  <div class="form-group">
+    <label
+        class="col-sm-2 control-label left-important"
+        for="form-role-detail-rights"
+    >{{ 'Field rights' | translate }}:</label>
+    <div class="col-md-10 form-inline">
+
+      <select
+          class="form-control"
+          name="fabrHeaderForValueToBeAdded"
+          [disabled]="role.isAdmin"
+          [(ngModel)]="fabrHeaderForValueToBeAdded">
+
+        <option
+            value=""
+            class="text-muted"
+            [selected]="fabrHeaderForValueToBeAdded === ''"
+        ><em>{{ 'Select column to filter for' | translate }}:</em></option>
+        <option value="ALL"><strong>All columns</strong></option>
+        <option
+            *ngFor="let fabrHeader of arrFabrHeadersAll"
+            [value]="fabrHeader"
+        >{{ fabrHeader | translate }}</option>
+      </select>
+
+      <input
+          type="text"
+          class="form-control w50pc"
+          name="fabrValueToBeAdded"
+          placeholder="{{ 'Define field value name for filter' | translate }}"
+          [disabled]="role.isAdmin"
+          (keydown)="doAddFabrHeaderAndValueByEnterKey($event)"
+          [(ngModel)]="fabrValueToBeAdded">
+      <button type="button" class="btn btn-primary"
+          [disabled]="role.isAdmin || !fabrValueToBeAdded || !fabrHeaderForValueToBeAdded"
+          (click)="fabrHeaderForValueToBeAdded && fabrValueToBeAdded && doAddFabrHeaderAndValue()"
+      >{{ 'Add filter' | translate }}</button>
+
+      <div class="vmargin-half-rem" [hidden]="role?.getFabrHeadersOfValues()?.length <= 0"></div>
+      <div>
+        <ng-template
+            ngFor
+            let-fabrHeader
+            [ngForOf]="role.getFabrHeadersOfValues()">
+          <ng-template
+              ngFor
+              let-fabrValue
+              [ngForOf]="role.aarFabrHeadersAndValues[fabrHeader]">
+
+            <button
+                type="button"
+                class="btn btn-default fabr-button"
+                [disabled]="role.isAdmin"
+                (click)="role.removeFabrHeaderAndValue(fabrHeader, fabrValue)">
+              <span><i class="glyphicon glyphicon-remove text-danger"></i></span>
+              <span><strong>{{ fabrHeader | translate }}:</strong> {{ fabrValue }}</span>
+            </button>
+
+          </ng-template>
+        </ng-template>
+
+        <button
+            type="button"
+            class="btn btn-danger fabr-button"
+            [hidden]="role?.getFabrHeadersOfValues()?.length <= 0"
+            (click)="role.removeAllHeadersAndValues()">
+          <i class="glyphicon glyphicon-remove"></i>
+        </button>
+
+      </div>
+      <div class="vmargin-1rem"></div>
+      <!--<div class="alert alert-info">Please select the fields to filter for them.</div>-->
+    </div>
+  </div>
+  <!-- Fabrication headers and values end -->
+
+  <!--// Orders headers -->
+  <h3 class="separator">{{ 'Order' | translate }}</h3>
+  <div class="form-group">
+    <label
+        class="col-sm-2 control-label left-important"
+        for="form-role-detail-rights">{{ 'Column rights' | translate }}:</label>
+
+    <div class="col-md-10">
+      <div>
+        <select
+            class="form-control"
+            name="ordrHeaderToBeAdded"
+            (change)="doAddOrdrHeader()"
+            [disabled]="role.isAdmin"
+            [(ngModel)]="ordrHeaderToBeAdded">
+
+          <option
+              value=""
+              class="text-muted"
+              [selected]="ordrHeaderToBeAdded === ''"
+          ><em>{{ 'Select column to exclude' | translate }}:</em></option>
+          <option
+              *ngFor="let ordrHeader of arrOrdrHeadersAll"
+              [hidden]="role.isOrdrHeaderInRole(ordrHeader)"
+              [value]="ordrHeader"
+          >{{ ordrHeader | translate }}</option>
+        </select>
+      </div>
+      <div class="vmargin-half-rem" [hidden]="role?.arrOrdrHeaders?.length <= 0"></div>
+      <div>
+        <ng-template
+            ngFor
+            let-ordrHeader
+            [ngForOf]="role.arrOrdrHeaders">
+
+          <button
+              type="button"
+              class="btn btn-default ordr-button"
+              [disabled]="role.isAdmin"
+              (click)="role.removeOrdrHeader(ordrHeader)">
+
+            <span><i class="glyphicon glyphicon-remove text-danger"></i></span>
+            <span>{{ ordrHeader | translate }}</span>
+          </button>
+        </ng-template>
+        <button type="button" class="btn btn-danger ordr-button"
+            [hidden]="role?.arrOrdrHeaders?.length <= 0"
+            (click)="role.removeAllOrdrHeaders()">
+          <i class="glyphicon glyphicon-remove"></i>
+        </button>
+      </div>
+      <div class="vmargin-1rem"></div>
+      <!--<div class="alert alert-info">Please select the columns to exclude from the table.</div>-->
+    </div>
+  </div>
+  <!-- Orders headers end -->
+
+  <!-- Orders headers and values -->
+  <div class="form-group">
+    <label
+        class="col-sm-2 control-label left-important"
+        for="form-role-detail-rights"
+    >{{ 'Field rights' | translate }}:</label>
+    <div class="col-md-10 form-inline">
+
+      <select
+          class="form-control"
+          name="ordrHeaderForValueToBeAdded"
+          [disabled]="role.isAdmin"
+          [(ngModel)]="ordrHeaderForValueToBeAdded">
+
+        <option
+            value=""
+            class="text-muted"
+            [selected]="ordrHeaderForValueToBeAdded === ''"
+        ><em>{{ 'Select column to filter for' | translate }}:</em></option>
+        <option value="ALL"><strong>All columns</strong></option>
+        <option
+            *ngFor="let ordrHeader of arrOrdrHeadersAll"
+            [value]="ordrHeader"
+        >{{ ordrHeader | translate }}</option>
+      </select>
+
+      <input
+          type="text"
+          class="form-control w50pc"
+          name="ordrValueToBeAdded"
+          placeholder="{{ 'Define field value name for filter' | translate }}"
+          [disabled]="role.isAdmin"
+          (keydown)="doAddOrdrHeaderAndValueByEnterKey($event)"
+          [(ngModel)]="ordrValueToBeAdded">
+      <button type="button" class="btn btn-primary"
+          [disabled]="role.isAdmin || !ordrValueToBeAdded || !ordrHeaderForValueToBeAdded"
+          (click)="ordrHeaderForValueToBeAdded && ordrValueToBeAdded && doAddOrdrHeaderAndValue()"
+      >{{ 'Add filter' | translate }}</button>
+
+      <div class="vmargin-half-rem" [hidden]="role?.getOrdrHeadersOfValues()?.length <= 0"></div>
+      <div>
+        <ng-template
+            ngFor
+            let-ordrHeader
+            [ngForOf]="role.getOrdrHeadersOfValues()">
+          <ng-template
+              ngFor
+              let-ordrValue
+              [ngForOf]="role.aarOrdrHeadersAndValues[ordrHeader]">
+
+            <button
+                type="button"
+                class="btn btn-default ordr-button"
+                [disabled]="role.isAdmin"
+                (click)="role.removeOdrHeaderAndValue(ordrHeader, ordrValue)">
+              <span><i class="glyphicon glyphicon-remove text-danger"></i></span>
+              <span><strong>{{ ordrHeader | translate }}:</strong> {{ ordrValue }}</span>
+            </button>
+
+          </ng-template>
+        </ng-template>
+
+        <button
+            type="button"
+            class="btn btn-danger ordr-button"
+            [hidden]="role?.getOrdrHeadersOfValues()?.length <= 0"
+            (click)="role.removeAllHeadersAndValues()">
+          <i class="glyphicon glyphicon-remove"></i>
+        </button>
+
+      </div>
+      <div class="vmargin-1rem"></div>
+      <!--<div class="alert alert-info">Please select the fields to filter for them.</div>-->
+    </div>
+  </div>
+  <!-- Orders headers and values end -->
+
+  <hr>
+  <div class="row">
+    <div class="col-md-6 left">
+      <button type="button" class="btn btn-primary" routerLink="/roles">
+        <span class="glyphicon glyphicon-share-alt icon-flipped"></span>
+        <span>{{ 'Back' | translate }}</span>
+      </button>
+    </div>
+
+    <div class="col-md-6 right" *ngIf="!isUpdate">
+      <button
+          type="button"
+          class="btn btn-danger"
+          [disabled]="formRoleDetail.form._pristine"
+          (click)="doResetForm(formRoleDetail.form)">
+        <span class="glyphicon glyphicon-remove"></span>
+        <span>{{ 'Clear' | translate }}</span>
+      </button>
+      <button
+          type="button"
+          class="btn btn-primary"
+          [disabled]="!role.isRoleValid()"
+          (click)="doCreateRole(true)">
+        <span class="glyphicon glyphicon-share-alt icon-flipped"></span>
+        <span>{{ 'Create' | translate }}</span>
+      </button>
+      <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="!role.isRoleValid()">
+        <span class="glyphicon glyphicon-floppy-disk"></span>
+        <span>{{ 'Save' | translate }}</span>
+      </button>
+    </div>
+
+    <div class="col-md-6 right" *ngIf="isUpdate">
+      <button
+          type="button"
+          class="btn btn-danger"
+          (click)="doDeleteRole()">
+        <span class="glyphicon glyphicon-remove"></span>
+        <span>{{ 'Delete' | translate }}</span>
+      </button>
+      <button
+          type="button"
+          class="btn btn-danger"
+          [disabled]="!hasRoleChanged()"
+          (click)="doResetRole()">
+        <span class="glyphicon glyphicon-remove"></span>
+        <span>{{ 'Reset' | translate }}</span>
+      </button>
+      <button
+          type="button"
+          class="btn btn-primary"
+          [disabled]="!role.isRoleValid() || !hasRoleChanged()"
+          (click)="doUpdateRole(true)">
+        <span class="glyphicon glyphicon-share-alt icon-flipped"></span>
+        <span>{{ 'Update' | translate }}</span>
+      </button>
+      <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="!role.isRoleValid() || !hasRoleChanged()">
+        <span class="glyphicon glyphicon-floppy-disk"></span>
+        <span>{{ 'Save' | translate }}</span>
+      </button>
+    </div>
+
+  </div>
+</form>
+<br>

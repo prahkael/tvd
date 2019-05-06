@@ -1,0 +1,206 @@
+.fabrications thead th,
+.fabrications tbody td {
+  text-align: right;
+  /* width: 2%; */
+}
+
+.fabrications thead th.column-OrderDuedateCw {
+  width: 30px;
+}
+
+.fabrications thead th.column-priority,
+.fabrications tbody td.column-priority {
+  text-align: center;
+}
+
+/* .fabrications thead th:nth-child(4),
+.fabrications thead th:nth-child(5),
+.fabrications thead th:nth-child(6),
+.fabrications thead th:nth-child(7),
+.fabrications tbody td:nth-child(4),
+.fabrications tbody td:nth-child(5),
+.fabrications tbody td:nth-child(6),
+.fabrications tbody td:nth-child(7) {
+  text-align: right;
+} */
+/* .fabrications thead th:nth-child(3),
+.fabrications tbody th:nth-child(3) {
+  min-width: 104px;
+} */
+.fabrications thead th:nth-child(9),
+.fabrications tbody td:nth-child(9) {
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fabrications.table th.highlighted,
+.fabrications.table td.highlighted {
+  background-color: rgba(209, 233, 253, 0.25);
+}
+
+.fabrications th:hover {
+  cursor: pointer;
+}
+.fabrications tr {
+  cursor: pointer;
+}
+.fabrications td {
+  border: none;
+}
+.fabrications th,
+.fabrications .nowrap-ellipsis {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap;
+}
+.fabrications .nowrap-ellipsis:hover .nowrap-ellipsis-hover {
+  display: inline-block;
+}
+/*.fabrications tr:nth-child(3n+4) {*/
+.fabrications tr.border {
+  border-top: 1px solid #ddd;
+}
+.fabrications tr.active,
+.fabrications tr:hover {
+  background-color: #f4f4f4;
+}
+
+.fabrications tr:first-child:hover {
+  background-color: inherit;
+}
+
+.fabrication-table-row.gray * {
+  color: #bbb;
+}
+.fabrication-table-row.gray:hover * {
+  color: black !important;
+}
+.fabrication-table-row td {
+  padding-bottom: 0;
+}
+
+.fabrication-table-secondary dl,
+.fabrication-table-extra dl {
+  overflow: hidden;
+}
+.fabrication-table-secondary dl *,
+.fabrication-table-extra dl * {
+  float: left;
+}
+.fabrication-table-secondary dl dt,
+.fabrication-table-extra dl dt {
+  width: 30%;
+}
+.fabrication-table-extra dl:nth-child(2n+1) {
+  background-color: #f4f4f4;
+}
+.fabrication-table-extra dt.padding {
+  padding-left: 22px;
+}
+.fabrication-table-secondary td {
+  padding-bottom: 0;
+  padding-top: 0;
+}
+.fabrication-table-secondary,
+.fabrication-table-secondary:hover {
+  background-color: #e8efff !important;
+}
+
+#fabrication-list-scroll-end {
+  text-align: center !important;
+  margin: 4rem 0;
+}
+
+#fast-fitlers {
+  -webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.25);
+  -moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.25);
+  box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.25);
+  left: 1rem;
+  margin-top: .5rem;
+  position: absolute;
+  z-index: 10000;
+}
+#fast-fitlers .btn-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}
+#fast-fitlers h4 {
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 9.5px;
+  margin-bottom: 1.4rem;
+}
+#fast-fitlers h5 {
+  text-decoration: underline;
+  margin-bottom: .5rem;
+}
+#fast-fitlers ul {
+  list-style: none;
+  padding-left: 0;
+}
+#fast-fitlers ul li:before {
+    content: "+";
+    margin-right: 4px;
+}
+#fast-fitlers ul li.active:before,
+#fast-fitlers ul li.active a {
+  color: #bbb !important;
+}
+
+.fabrications.table .priority {
+  border-radius: 4px;
+  padding: .4rem;
+}
+.fabrications.table .priority-immediate {
+  background-color: red;
+  color: white;
+}
+.fabrications.table .priority-major {
+  background-color: orange;
+  color: white;
+}
+.fabrications.table .priority-average {
+  background-color: yellow;
+  color: black;
+}
+.fabrications.table .priority-minor {
+  background-color: green;
+  color: white;
+}
+
+.fabrications.table .priority-selector {
+  background-color: white;
+  box-shadow: 0 0 2px 2px #ddd;
+  padding: 1rem;
+  position: absolute;
+  z-index: 100;
+}
+.fabrications.table .priority-selector .priority {
+  margin-right: .2rem;
+  padding: .4rem;
+}
+
+.fabrication-table-comment td {
+  box-sizing: border-box;
+  /* padding: 0 8px 8px 8px; */
+}
+
+.fabrication-table-comment pre {
+  background-color: transparent;
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+.fabrication-table-comment textarea {
+  border: none;
+  margin: 0;
+  padding: 2px 10px;
+  resize: none;
+  /* text-align: right; */
+  width: calc(100% - 20px);
+}
+.fabrication-table-comment textarea:hover,
+.fabrication-table-comment.filled-out textarea {
+  background-color: #f3fcff;
+}

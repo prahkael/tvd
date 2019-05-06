@@ -1,0 +1,159 @@
+/* ************************************************************************** */
+/* Common tags
+/* ************************************************************************** */
+
+html, body {
+  font-size: 16px;
+}
+
+a {
+  cursor: pointer;
+  color: inherit !important;
+}
+a:hover {
+  color: #337ab7 !important;
+}
+
+h1.separator, h2.separator, h3.separator, h4.separator {
+  border-bottom: 1px solid #eee;
+  margin-top: 3em;
+  padding-bottom: .25em;
+}
+
+h5 {
+  font-size: 1rem;
+  font-weight: normal;
+  margin-bottom: .25rem;
+}
+
+dl {
+  margin-bottom: .5rem;
+  margin-top: .5rem;
+}
+
+input+.alert,
+.input-group+.alert {
+  margin-bottom: .5rem;
+  margin-top: 1rem;
+}
+
+/* ************************************************************************** */
+/* Common classes
+/* ************************************************************************** */
+
+.float-left {
+  float: left;
+}
+.float-right {
+  float: right;
+}
+.clear {
+  clear: both;
+}
+
+.left {
+  text-align: left;
+}
+.left-important {
+  text-align: left !important;
+}
+.right {
+  text-align: right;
+}
+.center {
+  text-align: center;
+}
+
+.icon-flipped {
+  transform: scaleX(-1);
+  -moz-transform: scaleX(-1);
+  -webkit-transform: scaleX(-1);
+  -ms-transform: scaleX(-1);
+}
+
+.hidden, [hidden] {
+  display: none !important;
+}
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.w50pc {
+  width: 50% !important;
+}
+
+/* vertical margins */
+.vmargin-half-rem {
+  width: 100%;
+  height: .5rem;
+}
+.vmargin-1rem {
+  width: 100%;
+  height: 1rem;
+}
+
+.no-break {
+  white-space: nowrap;
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.badge.normal {
+  font-weight: normal;
+}
+
+/* ************************************************************************** */
+/* Footer
+/* ************************************************************************** */
+
+#footer {
+  background-color: #f8f8f8;
+  border-top: 1px solid #e7e7e7;
+  margin-top: 4rem;
+  padding: 2rem 0;
+}
+
+/* ************************************************************************** */
+/* Tooltip
+/* ************************************************************************** */
+
+/* Tooltip container */
+.dl-tooltip {
+  overflow: visible;
+  position: relative;
+}
+/*.dl-tooltip::before {
+  content: '◀';
+}*/
+
+/* Tooltip text */
+.dl-tooltip .dl-tooltip-text {
+  background-color: black;
+  border-radius: 6px;
+  color: #fff;
+  min-width: 120px;
+  padding: 5px;
+  position: absolute;
+  right: 100%;
+  text-align: center;
+  visibility: hidden;
+  width: auto;
+  z-index: 1;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.dl-tooltip:hover .dl-tooltip-text {
+  visibility: visible;
+}
+
+/* ************************************************************************** */
+/* Bootstrap overrides */
+/* ************************************************************************** */
+
+.container-fluid {
+  width: 80%;
+}
+
+/* ************************************************************************** */

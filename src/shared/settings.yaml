@@ -1,0 +1,147 @@
+# common settings
+algorithm     : aes-256-ctr
+secret        : Afs2QW.A$!-asD
+expiration    : 1200
+expirationLong: 604800
+
+# resources for authorization
+resources:
+  - users
+  - roles
+  - fabrications
+  - orders
+
+# possible database settings
+Sybase:
+  Host  : 10.6.2.11
+  Port  : 50000
+  Server: GEWATEC
+  DBN   : provis
+  UID   : test
+  PWD   : test1234
+  Timing: false
+  Jar   : JavaSybase12Link.jar
+
+priorities:
+  - immediate
+  - major
+  - average
+  - minor
+
+# fabrication headers
+fabricationHeaders:
+  primary:
+    - OrderDuedateTime
+    - OrderDuedateCw
+    - WorkorderId
+    - OrderId
+    - TargetQuantity
+    - CurrentQuantity
+    - ArticleCode
+  secondary:
+    - ArticleDescription
+    - TargetQuantityOrder
+    - Surface
+    - OPStatus
+    - OPStatusText
+    - Scrap
+    - Drawing
+    - DrawingIndex
+    - MachineId
+    - MachineName
+    - MachineDivision
+    - TurningMachine
+    - TurningMachineDivision
+    - TurningMachineResponsible
+    - PersId
+    - Personal
+    - OperationId
+    - OperationIndexPos
+    - OperationcodeText
+    - TargetEndDateTime
+    - TargetEndDateYear
+    - TargetEndDateCw
+    - TargetBeginDateTime
+    - RealBeginDateTime
+    - RealEndDateTime
+    - NewPart
+    - EMPB
+    - Sample
+  pipes:
+    OrderDuedateTime: date
+    TargetEndDateTime: date
+    TargetBeginDateTime: date
+    RealBeginDateTime: date
+    RealEndDateTime: date
+
+fabricationFilters:
+  - machineGroup
+
+# common fabrication settings
+fabrications:
+  sortDefault  : OrderDuedateTime
+  limitDefault : 50
+
+# order headers
+orderHeaders:
+  primary:
+    - DueDate
+    - DueCw
+    - IdentNr
+    - CustomerId
+    - OpenQuantity
+    - TotalOpenQuantity
+  secondary:
+    - ArticleCode
+    - ArticleDescription
+    - Surface
+    - OrderType
+    - ReleaseOrder
+    - OrderId
+    - OrderNr
+    - DueComment
+    - OrderDate
+    - OrderAckDate
+    - WishDate
+    - DueDate
+    - OrderSign
+    - CustomerName
+    - DueYear
+    - Drawing
+    - DrawingIndex
+    - MaterialCode
+    - MaterialDescription
+    - ArticleGroup
+    - Charge
+    - NewPart
+    - EMPB
+    - Sample
+  pipes:
+    - DueDate: date
+    - WishDate: date
+    - OrderDate: date
+    - OrderAckDate: date
+
+orderFilters:
+  - machineGroup
+
+# common order settings
+orders:
+  sortDefault  : DueDate
+  limitDefault : 50
+
+## custom filters settings
+#customFilters:
+#  machineGroups:
+#    curveRow1   : [103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114]
+#    curveRow2   : [201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214]
+#    curveRow3   : [301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314]
+#    curveRow4   : [401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411]
+#    multiSpindle: [501, 502, 503, 504, 505]
+#    curveShort  : [508, 509, 510, 511, 512, 513, 514, 515, 516, 522, 523, 558]
+#    CNCTNL12H2  : [532, 533, 534, 535, 536, 549, 550, 551, 552, 553, 540, 542, 544, 546, 559, 560]
+#    CNCTNL12H1+3: [555, 557, 570, 575, 580, 585, 590]
+#    CNCTNL118+  : [547, 554, 556, 561, 562]
+#    QS          : [QS_MP01, QS_MP02, QS_MP03, QS_MP04, QS_MP05]
+#    PS          : [PS_Versand]
+#    Waage       : [Waage_QS, Waage_Reinigung, Waage_Versand]

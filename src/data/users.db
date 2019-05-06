@@ -1,0 +1,8 @@
+{"username":"test3","roleID":"ZwqJHi13s5hIJjOS","password":"sha1$bf32f1ea$1$f995eee7b6ea52e6317205307c9dacfe0fd4cb69","email":"test@test.test","firstName":"test3","lastName":"test3","_id":"5HQCLty4UMv0CESb"}
+{"username":"test","roleID":"YJoDMgrC0LGBEZM3","password":"sha1$90df534a$1$20a131eafd5ceb94547ba252cc638fef50f1ac64","email":"test@email.com","firstName":"test","lastName":"test","_id":"B4zCddcZ2tYXzOOk"}
+{"username":"userSignIn2","roleID":"EyAhBKfGViXXexyX","password":"sha1$893ca488$1$16817e479ebab38df1d41adbfd3a6e3f91bd92a6","email":"d","firstName":"Jane","lastName":"Doe","_id":"DejbrD1nRJzcptyf"}
+{"username":"test2","roleID":"M3D8y2uUZetxVXxV","password":"sha1$723eeffc$1$edb377c8ec3dbf5717c7a3d88da8959f1ffe89c1","email":"test@test.test","firstName":"test2","lastName":"test2","_id":"EPNhbeUJEnr8L9BI"}
+{"username":"patrick","email":"patrick@net-designer.net","password":"sha1$cbdc836e$1$252a025e69714e07ea15c566d9346ef5fb6945a7","firstName":"Patrick","lastName":"Beyer","_id":"NI6yzukO3ehOVMTT","roleID":"YJoDMgrC0LGBEZM3"}
+{"username":"userSignIn","roleID":"EyAhBKfGViXXexyX","password":"sha1$a390025f$1$6e884190fbcbf51484008eaed31f3daf2084d74d","email":"someEmail","firstName":"Jon","lastName":"Doe","_id":"b10YinbbHXdYlgqR"}
+{"username":"raoul","email":"raoul@net-designer.net","password":"sha1$6c7a40b5$1$7ee372cadf582666065271684688205c11543c07","firstName":"Raoul","lastName":"Mayer","_id":"cJgPxB58ypPhsdVJ","roleID":"sIhsQ58nBY35vgXy"}
+{"username":"marco","password":"sha1$ea68945d$1$6375faddb623807e3cb8bac58a451e018cd4e378","firstName":"Marco","lastName":"Schaule","email":"marco.schaule@net-designer.net","_id":"nHFk2i99Z1c1Jb1F","roleID":"sIhsQ58nBY35vgXy"}

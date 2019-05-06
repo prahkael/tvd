@@ -1,0 +1,10 @@
+#fast-fitlers.well([class.hidden]="!isFastFilterOpen")
+  button.btn.btn-link.btn-close(type="button", (click)="isFastFilterOpen=false"): i.glyphicon.glyphicon-remove
+  h4 {{ 'Fast filters' | translate }}
+
+  //h5 {{ 'machineGroup' | translate }}:
+  //ul
+  //  ng-template(ngFor="", let-strFilter="", [ngForOf]="aarFabrFilters['machineGroup'] | sort")
+  //    li([class.active]="doGetFilterValue('machineGroup') === strFilter")
+  //      a((click)="doSetFilter($event, 'machineGroup', strFilter)")
+  //        |{{ strFilter | translate }}

@@ -1,0 +1,9 @@
+{
+  "verbose": true,
+  "exclude": [
+    "./src/server/*.coffee",
+    "./src/data",
+    "./src/client",
+    "./src/assets"
+  ]
+}

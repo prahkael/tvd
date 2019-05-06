@@ -1,0 +1,141 @@
+<div class="page-header">
+  <h1>{{ 'User Detail' | translate }} <small>{{ 'Create a new user or edit an existing one' | translate }}</small></h1>
+</div>
+<div>
+  <button class="btn btn-primary" routerLink="/users">
+    <span class="glyphicon glyphicon-share-alt icon-flipped"></span>
+    <span>{{ 'Back' | translate }}</span>
+  </button>
+</div>
+<br>
+<br>
+
+<form novalidate class="form-horizontal" #formUserDetail>
+  <div class="form-group">
+    <label class="col-sm-2" for="form-user-detail-username">{{ 'Username' | translate }}:</label>
+    <div class="col-md-10">
+      <input
+          type="text"
+          class="form-control"
+          id="form-user-detail-username"
+          name="formUserDetailUsername"
+          [(ngModel)]="user.username">
+      <!--<div class="alert alert-info">Please enter a username to test whether it exists.</div>-->
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="col-sm-2" for="form-user-detail-role-id">{{ 'Role' | translate }}:</label>
+    <div class="col-md-10">
+      <select
+          name="formUserDetailRoleID"
+          class="form-control"
+          id="form-user-detail-role-id"
+          [(ngModel)]="user.roleID">
+        <!--<option
+            value=""
+            class="text-muted"
+            [selected]="true"
+        ><em>Please select a user role:</em></option>-->
+        <option
+            *ngFor="let objRole of arrRoles"
+            value="{{objRole._id}}"
+            [selected]="objRole._id === user.roleID"
+        >{{ objRole.strName }}</option>
+      </select>
+      <div class="vmargin-1rem"></div>
+      <!--<div class="alert alert-info">Please select a role this user belongs to.</div>-->
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="col-sm-2" for="form-user-detail-email">{{ 'Email' | translate }}:</label>
+    <div class="col-md-10">
+      <input type="email" class="form-control" id="form-user-detail-email" name="formUserDetailEmail" [(ngModel)]="user.email">
+      <!--<div class="alert alert-info">Please enter an email to test whether it exists.</div>-->
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="col-sm-2" for="form-user-detail-password">{{ 'Password' | translate }}:</label>
+    <div class="col-md-10">
+      <div class="input-group">
+        <input
+            type="text"
+            class="form-control"
+            id="form-user-detail-password"
+            name="formUserDetailPassword"
+            [(ngModel)]="user.password"
+            (ngModelChange)="isCopied=false">
+        <div class="input-group-btn">
+          <button
+              ngxClipboard
+              [ngClass]="{ 'btn': true, 'btn-primary': !isCopied, 'btn-success': isCopied }"
+              [cbContent]="user.password"
+              (cbOnSuccess)="isCopied=true">
+            <span class="glyphicon glyphicon-paperclip"></span> {{ 'Copy' | translate }}
+          </button>
+          <button class="btn btn-primary" (click)="generatePassword()">
+            <span class="glyphicon glyphicon-cog"></span> {{ 'Generate' | translate }}
+          </button>
+        </div>
+      </div>
+      <!--<div class="alert alert-info">Please enter a password to test whether it is valid.</div>-->
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="col-sm-2" for="form-user-detail-first-name">{{ 'First name' | translate }}:</label>
+    <div class="col-md-10"><input
+        type="text"
+        class="form-control"
+        id="form-user-detail-first-name"
+        name="formUserDetailFirstName"
+        [(ngModel)]="user.firstName"></div>
+  </div>
+  <div class="form-group">
+    <label class="col-sm-2" for="form-user-detail-last-name">{{ 'Last name' | translate }}:</label>
+    <div class="col-md-10"><input
+        type="text"
+        class="form-control"
+        id="form-user-detail-last-name"
+        name="formUserDetailLastName"
+        [(ngModel)]="user.lastName"></div>
+  </div>
+
+  <div class="form-group" *ngIf="isUpdate">
+    <div class="right col-md-10 col-md-offset-2">
+      <button class="btn btn-danger" (click)="doDeleteUser(user._id)">
+        <span class="glyphicon glyphicon-share-trash"></span>
+        <span>{{ 'Delete' | translate }}</span>
+      </button>
+      <button class="btn btn-primary" (click)="doUpdateUser(user, true)">
+        <span class="glyphicon glyphicon-share-alt icon-flipped"></span>
+        <span>{{ 'Update' | translate }}</span>
+      </button>
+      <button class="btn btn-primary" (click)="doUpdateUser(user)">
+        <span class="glyphicon glyphicon-floppy-disk"></span>
+        <span>{{ 'Save' | translate }}</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="form-group" *ngIf="!isUpdate">
+    <div class="right col-md-10 col-md-offset-2">
+      <button class="btn btn-primary" (click)="doCreateUser(user, true)">
+        <span class="glyphicon glyphicon-share-alt icon-flipped"></span>
+        <span>{{ 'Create' | translate }}</span>
+      </button>
+      <button class="btn btn-primary" (click)="doCreateUser(user)">
+        <span class="glyphicon glyphicon-floppy-disk"></span>
+        <span>{{ 'Save' | translate }}</span>
+      </button>
+    </div>
+  </div>
+
+</form>
+
+<br>
+<hr>
+<div>
+  <button class="btn btn-primary" routerLink="/users">
+    <span class="glyphicon glyphicon-share-alt icon-flipped"></span>
+    <span>{{ 'Back' | translate }}</span>
+  </button>
+</div>

@@ -1,0 +1,26 @@
+<div class="page-header">
+  <h1>Sign in</h1>
+</div>
+
+<div class="alert alert-danger" [style.display]="isSignInIncorrect ? 'block' : 'none'">Username and/or password not correct!</div>
+
+<form name="formSignIn" (submit)="doSignIn()" novalidate>
+  <div class="form-group">
+    <label for="sign-in-username">Username: </label>
+    <input id="sign-in-username" class="form-control" type="text" name="formSignInUsername" [(ngModel)]="strUsername">
+  </div>
+  <div class="form-group">
+    <label for="sign-in-password">Password: </label>
+    <input id="sign-in-password" class="form-control" type="password" name="formSignInPassword" [(ngModel)]="strPassword">
+  </div>
+  <div class="checkbox">
+    <label for="sign-in-is-remembered">
+      <input id="sign-in-is-remembered" type="checkbox" name="formSignInIsRemembered" [(ngModel)]="isRemembered">
+      <span>Remember me</span>
+    </label>
+  </div>
+  <div class="vmargin-half-rem"></div>
+  <div class="form-group">
+    <button id="sign-in-submit" class="btn btn-primary" name="formSignInpassword">Sign in</button>
+  </div>
+</form>

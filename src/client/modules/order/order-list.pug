@@ -1,0 +1,248 @@
+.page-header
+  h1
+    |{{ 'Order List' | translate }}&nbsp;
+    small {{ 'Dates, times and other information' | translate }}
+
+br
+.row
+  .col-md-4.left.relative
+    include order-list-actions.pug
+    include order-list-filters-fast.pug
+  .col-md-8.right
+    include order-list-search.pug
+
+br
+.row(*ngIf="doGetKeysForFilters().length > 0")
+  .col-md-12.left
+    include order-list-filters-user.pug
+
+br
+.row(*ngIf="arrKeysOrdrHeadersAndValuesToFilterBy.length > 0")
+  .col-md-12.left
+    include order-list-filters-predefined.pug
+
+//- br
+//- br
+//- pre: code {{ arrOrdrs[0] | json }}
+//- br
+//- br
+
+br
+.row
+  .col-md-12.overflow-hidden
+    table.orders.table
+
+      thead
+        tr
+          ng-container
+            th #
+            th {{ 'Priority' | translate }}
+          ng-container(*ngFor="let primaryKey of settings?.orderHeaders?.primary")
+            th(*ngIf="arrOrdrHeadersToExclude.indexOf(primaryKey) < 0")
+              a((click)="doToggleSort(primaryKey)", title="{{ primaryKey | translate }}")
+                i.glyphicon.glyphicon-chevron-up([hidden]="!(isSortKeyEqual(primaryKey))")
+                i.glyphicon.glyphicon-chevron-down([hidden]="!(isSortKeyEqual('-' + primaryKey))")
+                span {{ primaryKey | translate }}
+          ng-container(*ngIf="arrOrdrHeadersSecondary.indexOf(doGetSortKey()) >= 0")
+            th.highlighted
+              a((click)="doToggleSort(doGetSortKey())", title="{{ doGetSortKey() | translate }}")
+                i.glyphicon.glyphicon-chevron-up([hidden]="!(isSortKeyEqual(doGetSortKey()))")
+                i.glyphicon.glyphicon-chevron-down([hidden]="!(isSortKeyEqual('-' + doGetSortKey()))")
+                span {{ doGetSortKey() | translate }}
+
+      tbody(*ngIf="arrOrdrs.length > 0")
+        ng-container(*ngFor="let objOrdr of arrOrdrs; trackBy doTrackRows; let index = index")
+
+          tr.order-table-row.border(
+              [class.gray-old]="isSortSecondaryKey() || isFilterSecondaryKey()",
+              [class.active]="isOrderOpen(index)",
+              (click)="doToggleOpenOrder(index)",
+          )
+            ng-container
+              td {{ index + 1 }}
+              td((click)="togglePrioritySelector($event, objOrdr.OrderId)")
+                div.priority([ngClass]="'priority-' + getPriority(objOrdr.OrderId)")
+                  |{{ getPriority(objOrdr.OrderId) | translate }}
+                div.priority-selector(*ngIf="strPrioritySelectorOpen === objOrdr.OrderId")
+                  span.priority(
+                      *ngFor="let prio of arrPriorities",
+                      [ngClass]="'priority-' + prio",
+                      (click)="setPriority(objOrdr.OrderId, prio)"
+                  ) {{ prio | translate }}
+            ng-container(*ngFor="let primaryKey of settings?.orderHeaders?.primary")
+              td(*ngIf="arrOrdrHeadersToExclude.indexOf(primaryKey) < 0")
+                a((click)="doSetFilter($event, primaryKey, objOrdr[primaryKey])",
+                    title="{{ 'Set filter to variable' | translate:{ strHeader: (primaryKey | translate) } }}")
+                  span(*ngIf="settings?.orderHeaders?.pipes[primaryKey] === 'date'")
+                    |{{ objOrdr[primaryKey] | date:"y-MM-dd" }}
+                  span(*ngIf="!settings?.orderHeaders?.pipes[primaryKey]")
+                    |{{ objOrdr[primaryKey] | translate }}
+            ng-container(*ngIf="arrOrdrHeadersSecondary.indexOf(doGetSortKey()) >= 0")
+              td.highlighted {{ objOrdr[doGetSortKey()] }}
+
+          tr.order-table-extra(
+              *ngIf="isOrderOpen(index)",
+              (click)="doToggleOpenOrder(index)",
+              [class.active]="isOrderOpen(index)",
+          )
+            td
+            td([attr.colspan]="100")
+              ng-container(*ngFor="let secondaryKey of settings?.orderHeaders?.secondary")
+                dl(*ngIf="objOrdr[secondaryKey] && arrOrdrHeadersToExclude.indexOf(secondaryKey) < 0")
+                  dt([class.padding]="!isSortSecondaryKey() || isSortSecondaryKey() && secondaryKey !== strSortKey")
+                    a.left((click)="doToggleSort(secondaryKey)", title="{{ secondaryKey }}")
+                      i.glyphicon.glyphicon-chevron-up([hidden]="!(isSortKeyEqual(secondaryKey))")
+                      i.glyphicon.glyphicon-chevron-down([hidden]="!(isSortKeyEqual('-' + secondaryKey))")
+                      span  {{ secondaryKey | translate }}:
+                  dd
+                    a((click)="doSetFilter($event, secondaryKey, objOrdr[secondaryKey])",
+                        title="Set filter to {{secondaryKey}}",
+                    ) {{ objOrdr[secondaryKey] | translate }}
+            td(*ngIf="arrOrdrHeadersSecondary.indexOf(doGetSortKey()) >= 0")
+
+.alert.alert-info(*ngIf="arrOrdrs.length <= 0")
+  |{{ "No order data found" | translate }}!
+
+#order-list-scroll-end.alert.alert-info(*ngIf="!hasNoMoreRows")
+  div([hidden]="!isAutoloadActive") {{ "Scroll here to load more" | translate }} ...
+  button.btn.btn-primary(
+      [hidden]="isAutoloadActive",
+      (click)="doReadOrdersToAdd()",
+  ) {{ "Click here to load more" | translate }} ...
+
+
+//- br
+//- .row
+//-   .col-md-12.overflow-hidden
+//-     table.orders.table
+//-       thead
+//-         tr
+//-           th #
+//-           th(*ngIf="arrOrdrHeadersToExclude.indexOf("OrderDuedateTime") < 0")
+//-             a((click)="doToggleSort("OrderDuedateTime")",
+//-                 title="{{ "CW" | translate }}")
+//-               i.glyphicon.glyphicon-chevron-up([hidden]="!(isSortKeyEqual("OrderDuedateTime"))")
+//-               i.glyphicon.glyphicon-chevron-down([hidden]="!(isSortKeyEqual("-OrderDuedateTime"))")
+//-               span {{ "CW" | translate }}
+//-           th(*ngIf="arrOrdrHeadersToExclude.indexOf("OrderDuedateTime") < 0")
+//-             a((click)="doToggleSort("OrderDuedateTime")",
+//-                 title="{{ "Date" | translate }}")
+//-               i.glyphicon.glyphicon-chevron-up([hidden]="!(isSortKeyEqual("OrderDuedateTime"))")
+//-               i.glyphicon.glyphicon-chevron-down([hidden]="!(isSortKeyEqual("-OrderDuedateTime"))")
+//-               span {{ "Date" | translate }}
+//-           th(*ngIf="arrOrdrHeadersToExclude.indexOf("MachineId") < 0")
+//-             a((click)="doToggleSort("MachineId")",
+//-                 title="{{ "Workorder ID" | translate }}")
+//-               i.glyphicon.glyphicon-chevron-up([hidden]="!(isSortKeyEqual("MachineId"))")
+//-               i.glyphicon.glyphicon-chevron-down([hidden]="!(isSortKeyEqual("-MachineId"))")
+//-               span {{ "Machine ID" | translate }}
+//-           th(*ngIf="arrOrdrHeadersToExclude.indexOf("WorkorderId") < 0")
+//-             a((click)="doToggleSort("WorkorderId")",
+//-                 title="{{ "Workorder ID" | translate }}")
+//-               i.glyphicon.glyphicon-chevron-up([hidden]="!(isSortKeyEqual("WorkorderId"))")
+//-               i.glyphicon.glyphicon-chevron-down([hidden]="!(isSortKeyEqual("-WorkorderId"))")
+//-               span {{ "Workorder ID" | translate }}
+//-           th(*ngIf="arrOrdrHeadersToExclude.indexOf("CurrentQuantity") < 0")
+//-             a((click)="doToggleSort("CurrentQuantity")",
+//-                 title="{{ "Amount current" | translate }}")
+//-               i.glyphicon.glyphicon-chevron-up([hidden]="!(isSortKeyEqual("CurrentQuantity"))")
+//-               i.glyphicon.glyphicon-chevron-down([hidden]="!(isSortKeyEqual("-CurrentQuantity"))")
+//-               span {{ "Amount current" | translate }}
+//-           th(*ngIf="arrOrdrHeadersToExclude.indexOf("TargetQuantity") < 0")
+//-             a((click)="doToggleSort("TargetQuantity")",
+//-                 title="{{ "Amount target" | translate }}")
+//-               i.glyphicon.glyphicon-chevron-up([hidden]="!(isSortKeyEqual("TargetQuantity"))")
+//-               i.glyphicon.glyphicon-chevron-down([hidden]="!(isSortKeyEqual("-TargetQuantity"))")
+//-               span {{ "Amount target" | translate }}
+//-           th(*ngIf="arrOrdrHeadersToExclude.indexOf("ArticleCode") < 0")
+//-             a((click)="doToggleSort("ArticleCode")",
+//-                 title="{{ "Article code" | translate }}")
+//-               i.glyphicon.glyphicon-chevron-up([hidden]="!(isSortKeyEqual("ArticleCode"))")
+//-               i.glyphicon.glyphicon-chevron-down([hidden]="!(isSortKeyEqual("-ArticleCode"))")
+//-               span {{ "Article code" | translate }}
+//-           th(*ngIf="arrOrdrHeadersToExclude.indexOf("surfaceText") < 0")
+//-             a((click)="doToggleSort("surfaceText")",
+//-                 title="{{ "Description" | translate }}")
+//-               i.glyphicon.glyphicon-chevron-up([hidden]="!(isSortKeyEqual("surfaceText"))")
+//-               i.glyphicon.glyphicon-chevron-down([hidden]="!(isSortKeyEqual("-surfaceText"))")
+//-               span {{ "Description" | translate }}
+//-           th.highlighted(*ngIf="arrOrdrHeadersSecondary.indexOf(doGetSortKey()) >= 0")
+//-             a((click)="doToggleSort(doGetSortKey())",
+//-                 title="{{ "Description" | translate }}")
+//-               i.glyphicon.glyphicon-chevron-up([hidden]="!(isSortKeyEqual(doGetSortKey()))")
+//-               i.glyphicon.glyphicon-chevron-down([hidden]="!(isSortKeyEqual("-" + doGetSortKey()))")
+//-               span {{ doGetSortKey() | translate }}
+//-       tbody(*ngIf="arrOrdrs.length <= 0")
+//-         td(colspan="9")
+//-           .alert.alert-info {{ "No order data found" | translate }}!
+//-       tbody(*ngIf="arrOrdrs.length > 0")
+//-         ng-template(ngFor="", let-objOrdr="", let-index="index", [ngForOf]="arrOrdrs", [ngForTrackBy]="doTrackRows")
+//-           tr.order-table-row.border((click)="doToggleOpenOrder(index)", [class.gray]="isSortSecondaryKey() || isFilterSecondaryKey()", [class.active]="isOrderOpen(index)")
+//-             td {{ index + 1 }}
+//-             td(*ngIf="arrOrdrHeadersToExclude.indexOf("OrderDuedateYear") < 0")
+//-               a((click)="doSetFilter($event, "OrderDuedateCw", objOrdr.OrderDuedateCw)",
+//-                   title="{{ "Set filter to variable" | translate:{ strHeader: "Calendar Week" | translate } }}")
+//-                 |{{ objOrdr.OrderDuedateCw }}
+//-               span ,&nbsp;
+//-               a((click)="doSetFilter($event, "calendarYear", objOrdr.calendarYear)",
+//-                   title="{{ "Set filter to variable" | translate:{ strHeader: "Calendar Year" | translate } }}")
+//-                 |{{ objOrdr.OrderDuedateYear }}
+//-             td(*ngIf="arrOrdrHeadersToExclude.indexOf("OrderDuedateTime") < 0")
+//-               a((click)="doSetFilter($event, "OrderDuedateTime", objOrdr.OrderDuedateTime)",
+//-                   title="{{ "Set filter to variable" | translate:{ strHeader: "Date and Time" | translate } }}")
+//-                 |{{ objOrdr.OrderDuedateTime | date:"y-MM-dd" }}
+//-             td(*ngIf="arrOrdrHeadersToExclude.indexOf("MachineId") < 0")
+//-               a((click)="doSetFilter($event, "MachineId", objOrdr.MachineId)",
+//-                   title="{{ "Set filter to variable" | translate:{ strHeader: "Workorder ID" | translate } }}")
+//-                 |{{ objOrdr.MachineId }}
+//-             td(*ngIf="arrOrdrHeadersToExclude.indexOf("WorkorderId") < 0")
+//-               a((click)="doSetFilter($event, "WorkorderId", objOrdr.WorkorderId)",
+//-                   title="{{ "Set filter to variable" | translate:{ strHeader: "Workorder ID" | translate } }}")
+//-                 |{{ objOrdr.WorkorderId }}
+//-             td(*ngIf="arrOrdrHeadersToExclude.indexOf("CurrentQuantity") < 0")
+//-               a((click)="doSetFilter($event, "CurrentQuantity", objOrdr.CurrentQuantity)",
+//-                   title="{{ "Set filter to variable" | translate:{ strHeader: "Amount Current" | translate } }}")
+//-                 |{{ objOrdr.CurrentQuantity | number:0 }}
+//-             td(*ngIf="arrOrdrHeadersToExclude.indexOf("TargetQuantity") < 0")
+//-               a((click)="doSetFilter($event, "TargetQuantity", objOrdr.TargetQuantity)",
+//-                   title="{{ "Set filter to variable" | translate:{ strHeader: "Amount Target" | translate } }}")
+//-                 |{{ objOrdr.TargetQuantity | number:0 }}
+//-             td(*ngIf="arrOrdrHeadersToExclude.indexOf("ArticleCode") < 0")
+//-               a((click)="doSetFilter($event, "ArticleCode", objOrdr.ArticleCode)",
+//-                   title="{{ "Set filter to variable" | translate:{ strHeader: "Article Code" | translate } }}")
+//-                 |{{ objOrdr.ArticleCode }}
+//-             td.no-break.overflow-hidden(*ngIf="arrOrdrHeadersToExclude.indexOf("surfaceText") < 0")
+//-               a((click)="doSetFilter($event, "surfaceText", objOrdr.surfaceText)",
+//-                   title="{{ "Set filter to variable" | translate:{ strHeader: "Surface" | translate } }}")
+//-                 |{{ objOrdr.surfaceText }}
+//-             td.highlighted(*ngIf="arrOrdrHeadersSecondary.indexOf(doGetSortKey()) >= 0")
+//-               |{{ objOrdr[doGetSortKey()] }}
+//-           tr.order-table-extra(*ngIf="isOrderOpen(index)", (click)="doToggleOpenOrder(index)", [class.active]="isOrderOpen(index)")
+//-             td
+//-             td(colspan="8")
+//-               ng-container(*ngFor="let strKey of arrOrdrHeadersSecondary")
+//-                 dl(*ngIf="objOrdr[strKey] && arrOrdrHeadersToExclude.indexOf(strKey) < 0")
+//-                   dt([class.padding]="!isSortSecondaryKey() || isSortSecondaryKey() && strKey !== strSortKey")
+//-                     a.left((click)="doToggleSort(strKey)", title="{{ strKey }}")
+//-                       i.glyphicon.glyphicon-chevron-up([hidden]="!(isSortKeyEqual(strKey))")
+//-                       i.glyphicon.glyphicon-chevron-down([hidden]="!(isSortKeyEqual("-" + strKey))")
+//-                       span  {{ strKey | translate }}:
+//-                   dd
+//-                     a((click)="doSetFilter($event, strKey, objOrdr[strKey])", title="Set filter to {{strKey}}") {{ objOrdr[strKey] | translate }}
+//-             td(*ngIf="arrOrdrHeadersSecondary.indexOf(doGetSortKey()) >= 0")
+          //- tr.order-table-secondary
+          //-   td
+          //-   td(colspan="8")
+          //-     ng-template(ngFor="", let-strKey="", [ngForOf]="arrOrdrHeadersSecondary")
+          //-       dl(*ngIf="objOrdr[strKey] && (doGetSortKey() === strKey || doGetKeysForFilters().indexOf(strKey) >= 0 || isSearchKeyInValue(objOrdr[strKey]+""))")
+          //-         dt
+          //-           a.left((click)="doToggleSort(strKey)", title="{{ strKey | translate }}")
+          //-             i.glyphicon.glyphicon-chevron-up([hidden]="!(isSortKeyEqual(strKey))")
+          //-             i.glyphicon.glyphicon-chevron-down([hidden]="!(isSortKeyEqual("-" + strKey))")
+          //-             span  {{ strKey | translate }}:
+          //-         dd
+          //-           a((click)="doSetFilter($event, strKey, objOrdr[strKey])", title="Set filter to {{strKey}}") {{ objOrdr[strKey] | translate }}
+          //-   td(*ngIf="arrOrdrHeadersSecondary.indexOf(doGetSortKey()) >= 0")
+    #order-list-scroll-end.alert.alert-info(*ngIf="!hasNoMoreRows")
+      div([hidden]="!isAutoloadActive") {{ "Scroll here to load more" | translate }} ...
+      button.btn.btn-primary([hidden]="isAutoloadActive", (click)="doReadOrdersToAdd()") {{ "Click here to load more" | translate }} ...
